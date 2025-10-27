@@ -14,10 +14,16 @@ from category.models import Category
 # Charger les variables d'environnement
 load_dotenv()
 
+# Importer les secrets depuis le fichier local
+try:
+    from secrets import HUGGINGFACE_TOKEN
+except ImportError:
+    HUGGINGFACE_TOKEN = os.getenv("HF_TOKEN", "")
+
 # Configuration API
 # FLUX.1-schnell : Modèle rapide et de haute qualité pour la génération d'images
 API_URL = "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell"
-HF_TOKEN = os.getenv("HF_TOKEN", "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")
+HF_TOKEN = HUGGINGFACE_TOKEN
 
 def query(payload):
     """Envoie une requête à l'API Hugging Face pour générer une image"""
