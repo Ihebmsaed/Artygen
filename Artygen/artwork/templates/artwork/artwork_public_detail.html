@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artwork Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            margin: 0;
+            background-color: #f7f7f7; /* Fond gris clair */
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+            max-width: 1200px;
+            margin: 50px auto; /* Centrage de la carte */
+            background-color: white;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+        }
+
+        .image-container {
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .image-container img {
+            width: 60%; /* Ajustez la largeur de l'image */
+            height: auto;
+            object-fit: cover;
+            margin-left: 90px; /* Espace à gauche de l'image */
+        }
+
+        .details-container {
+            padding: 20px;
+        }
+
+        .btn-custom {
+            background-color: #d4af37;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 5px;
+        }
+
+        .btn-custom:hover {
+            background-color: #b68c2a;
+            color: white;
+            text-decoration: none;
+
+        }
+
+        .btn-danger {
+            margin: 5px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .zoom-buttons {
+            position: absolute;
+            top: 10px; /* Place les boutons en haut de l'image */
+            right: 10px; /* Aligne les boutons à droite */
+            display: flex;
+            gap: 5px;
+        }
+
+        .details-container p {
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    {% include '../artwork/navbar.html' %}
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="row">
+            <div class="col-md-6 image-container">
+                <img id="artworkImage" src="{{ artwork.file.url }}" alt="{{ artwork.title }}">
+            </div>
+
+            <div class="col-md-6 details-container">
+                <h1>{{ artwork.title }}</h1>
+                <p><strong>Artist :</strong> {{ artwork.user.username }}</p>
+                <p><strong>Description :</strong> {{ artwork.description }}</p>
+                <p><strong>Category :</strong> {{ artwork.category }}</p>
+                <p><strong>Tags :</strong> {{ artwork.tags }}</p>
+
+                <div class="d-flex justify-content-center">
+                    <a href="{% url 'add_to_gallery' artwork.id %}" class="btn-custom">Add to collection</a>
+                    <a href="{% url 'all_artworks' %}" class="btn-custom">Back to list &rarr;</a> <!-- Flèche pour Retour -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

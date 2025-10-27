@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artwork Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            margin: 0;
+            background-color: #f7f7f7;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+            max-width: 1200px;
+            margin: 50px auto;
+            background-color: white;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+        }
+
+        .image-container {
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .image-container img {
+            width: 60%;
+            height: auto;
+            object-fit: cover;
+            margin-left: 90px;
+        }
+
+        .btn-custom {
+            background-color: #d4af37; /* Couleur or */
+            color: white; /* Couleur du texte */
+            border-radius: 5px; /* Coins arrondis */
+            padding: 10px 20px; /* Espacement intérieur */
+            margin: 5px; /* Espacement entre les boutons */
+            text-decoration: none; /* Enlever le soulignement */
+        }
+
+        .btn-custom:hover {
+            background-color: #b68c2a; /* Couleur or plus foncé au survol */
+            text-decoration: none; /* Enlever le soulignement */
+            color: white;
+        }
+
+        .btn-grey {
+            background-color: #6c757d; /* Couleur gris */
+            color: white; /* Couleur du texte */
+            border-radius: 5px; /* Coins arrondis */
+            padding: 10px 20px; /* Espacement intérieur */
+            margin: 5px; /* Espacement entre les boutons */
+            text-decoration: none; /* Enlever le soulignement */
+        }
+
+        .btn-grey:hover {
+            background-color: #5a6268; /* Couleur gris plus foncé au survol */
+            text-decoration: none; /* Enlever le soulignement */
+            color: white;
+        }
+
+        .btn-warning {
+            background-color: #d4af37; /* Couleur jaune */
+            color: white; /* Couleur du texte */
+            border-radius: 5px; /* Coins arrondis */
+            padding: 10px 20px; /* Espacement intérieur */
+            margin: 5px; /* Espacement entre les boutons */
+            border: none; /* Pas de bordure */
+            text-decoration: none; /* Enlever le soulignement */
+        }
+
+        .btn-warning:hover {
+            background-color: #b68c2a; /* Couleur jaune plus foncé au survol */
+            text-decoration: none; /* Enlever le soulignement */
+            color: white;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .zoom-buttons {
+            position: absolute;
+            top: 10px; /* Place les boutons en haut de l'image */
+            right: 10px; /* Aligne les boutons à droite */
+            display: flex;
+            gap: 5px;
+        }
+
+        .details-container p {
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    {% include '../artwork/navbar.html' %}
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="row">
+            <div class="col-md-6 image-container">
+                <img id="artworkImage" src="{{ artwork.file.url }}" alt="{{ artwork.title }}">
+            </div>
+
+            <div class="col-md-6 details-container">
+                <h1>{{ artwork.title }}</h1>
+                <p><strong>Artist :</strong> {{ artwork.user.username }}</p>
+                <p><strong>Description :</strong> {{ artwork.description }}</p>
+                <p><strong>Category :</strong> {{ artwork.category }}</p>
+                <p><strong>Tags :</strong> {{ artwork.tags }}</p>
+
+                <div class="d-flex justify-content-center">
+                    <a href="{% url 'artwork_update' artwork.pk %}" class="btn-custom">Edit</a>
+                    <form action="{% url 'artwork_delete' artwork.pk %}" method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-warning">Delete</button> <!-- Utilisation de la classe btn-warning -->
+                    </form>
+                    <a href="{% url 'artwork_list' %}" class="btn-grey">Back to list &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

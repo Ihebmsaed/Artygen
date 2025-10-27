@@ -1,0 +1,476 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - Artygen</title>
+    
+    <!-- Bootstrap -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <!-- Modern Design -->
+    <link href="{% static 'css/modern-design.css' %}" rel="stylesheet">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 40px 0;
+        }
+        
+        .register-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .register-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: slideInRight 0.6s ease-out;
+        }
+        
+        .register-header {
+            background: linear-gradient(135deg, #d4af37, #b38e2c);
+            padding: 40px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .register-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -25%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+        
+        .register-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .register-header p {
+            font-size: 1.1rem;
+            margin: 0;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .register-body {
+            padding: 40px;
+        }
+        
+        .form-step {
+            display: none;
+        }
+        
+        .form-step.active {
+            display: block;
+            animation: fadeIn 0.4s ease-out;
+        }
+        
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #e0e0e0;
+            z-index: 0;
+        }
+        
+        .progress-line {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #d4af37, #4a90e2);
+            transition: width 0.4s ease;
+            z-index: 1;
+        }
+        
+        .step {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+        }
+        
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #e0e0e0;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+        
+        .step.active .step-circle {
+            background: linear-gradient(135deg, #d4af37, #b38e2c);
+            border-color: #d4af37;
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .step.completed .step-circle {
+            background: #4caf50;
+            border-color: #4caf50;
+            color: white;
+        }
+        
+        .step.completed .step-circle i {
+            display: block;
+        }
+        
+        .step-label {
+            font-size: 0.85rem;
+            color: #666;
+            font-weight: 600;
+        }
+        
+        .step.active .step-label {
+            color: #d4af37;
+        }
+        
+        .btn-nav {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .ai-section {
+            background: linear-gradient(135deg, #fff8e1, #ffecb3);
+            border-left: 4px solid #d4af37;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+        
+        .ai-section h5 {
+            color: #d4af37;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container register-container">
+        <div class="register-card">
+            <!-- Header -->
+            <div class="register-header">
+                <h2><i class="fas fa-user-plus"></i> Créer un Compte</h2>
+                <p>Rejoignez la communauté Artygen</p>
+            </div>
+            
+            <!-- Messages -->
+            {% if messages %}
+            <div style="padding: 20px 40px;">
+                {% for message in messages %}
+                <div class="alert-modern alert-{{ message.tags }}-modern">
+                    <i class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}info-circle{% endif %}"></i>
+                    <span>{{ message }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <!-- Body -->
+            <div class="register-body">
+                <!-- Progress Steps -->
+                <div class="progress-steps">
+                    <div class="progress-line" id="progressLine"></div>
+                    <div class="step active" data-step="1">
+                        <div class="step-circle">
+                            <span class="step-number">1</span>
+                            <i class="fas fa-check" style="display:none;"></i>
+                        </div>
+                        <div class="step-label">Identité</div>
+                    </div>
+                    <div class="step" data-step="2">
+                        <div class="step-circle">
+                            <span class="step-number">2</span>
+                            <i class="fas fa-check" style="display:none;"></i>
+                        </div>
+                        <div class="step-label">Compte</div>
+                    </div>
+                    <div class="step" data-step="3">
+                        <div class="step-circle">
+                            <span class="step-number">3</span>
+                            <i class="fas fa-check" style="display:none;"></i>
+                        </div>
+                        <div class="step-label">Profil</div>
+                    </div>
+                </div>
+                
+                <!-- Form -->
+                <form method="POST" enctype="multipart/form-data" id="registerForm" class="form-modern">
+                    {% csrf_token %}
+                    
+                    <!-- Step 1: Personal Info -->
+                    <div class="form-step active" data-step="1">
+                        <h4 style="color: #d4af37; margin-bottom: 25px;">
+                            <i class="fas fa-id-card"></i> Informations Personnelles
+                        </h4>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern">
+                                        <i class="fas fa-user"></i> Prénom
+                                    </label>
+                                    {{ form.first_name }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern">
+                                        <i class="fas fa-user"></i> Nom
+                                    </label>
+                                    {{ form.last_name }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">
+                                <i class="fas fa-envelope"></i> Email
+                            </label>
+                            {{ form.email }}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern">
+                                        <i class="fas fa-calendar"></i> Date de Naissance
+                                    </label>
+                                    {{ form.birthdate }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern">
+                                        <i class="fas fa-id-card"></i> CIN
+                                    </label>
+                                    {{ form.cin }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2: Account Info -->
+                    <div class="form-step" data-step="2">
+                        <h4 style="color: #d4af37; margin-bottom: 25px;">
+                            <i class="fas fa-user-shield"></i> Informations du Compte
+                        </h4>
+                        
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">
+                                <i class="fas fa-at"></i> Nom d'utilisateur
+                            </label>
+                            {{ form.username }}
+                        </div>
+                        
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">
+                                <i class="fas fa-lock"></i> Mot de passe
+                            </label>
+                            {{ form.password1 }}
+                        </div>
+                        
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">
+                                <i class="fas fa-lock"></i> Confirmer le mot de passe
+                            </label>
+                            {{ form.password2 }}
+                        </div>
+                        
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">
+                                <i class="fas fa-user-tag"></i> Rôle
+                            </label>
+                            {{ form.role }}
+                        </div>
+                    </div>
+                    
+                    <!-- Step 3: Profile & AI -->
+                    <div class="form-step" data-step="3">
+                        <h4 style="color: #d4af37; margin-bottom: 25px;">
+                            <i class="fas fa-palette"></i> Profil Artistique
+                        </h4>
+                        
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">
+                                <i class="fas fa-camera"></i> Photo de Profil (optionnel)
+                            </label>
+                            {{ form.profile_image }}
+                            <small class="form-text text-muted">Formats acceptés: JPG, PNG, GIF (max 5MB)</small>
+                        </div>
+                        
+                        <!-- AI Bio Generator Section -->
+                        <div class="ai-section">
+                            <h5>
+                                <i class="fas fa-robot"></i> Génération de Bio par IA (Optionnel)
+                            </h5>
+                            <p style="color: #666; font-size: 0.95rem; margin-bottom: 20px;">
+                                Notre IA peut créer automatiquement une bio personnalisée pour vous!
+                            </p>
+                            
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">
+                                    <i class="fas fa-brush"></i> Style Artistique
+                                </label>
+                                {{ form.art_style }}
+                            </div>
+                            
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">
+                                    <i class="fas fa-heart"></i> Intérêts Artistiques
+                                </label>
+                                {{ form.art_interests }}
+                            </div>
+                            
+                            <div class="custom-control custom-checkbox">
+                                {{ form.generate_bio }}
+                                <label class="custom-control-label" for="{{ form.generate_bio.id_for_label }}">
+                                    <strong>✨ Générer automatiquement ma bio de profil</strong>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Navigation Buttons -->
+                    <div class="btn-nav">
+                        <button type="button" class="btn-modern btn-outline-modern" id="prevBtn" style="display:none;">
+                            <i class="fas fa-arrow-left"></i> Précédent
+                        </button>
+                        <button type="button" class="btn-modern btn-primary-modern" id="nextBtn">
+                            Suivant <i class="fas fa-arrow-right"></i>
+                        </button>
+                        <button type="submit" class="btn-modern btn-primary-modern" id="submitBtn" style="display:none;">
+                            <i class="fas fa-check-circle"></i> S'inscrire
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Login Link -->
+                <div class="text-center mt-4">
+                    <p>Déjà un compte? <a href="{% url 'login' %}" style="color: #d4af37; font-weight: 600;">Se connecter</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="{% static 'js/modern-interactive.js' %}"></script>
+    
+    <script>
+        // Multi-step form
+        let currentStep = 1;
+        const totalSteps = 3;
+        
+        // Add Bootstrap classes to Django form fields
+        document.querySelectorAll('input, select, textarea').forEach(field => {
+            if (!field.classList.contains('custom-control-input')) {
+                field.classList.add('form-control-modern');
+            }
+        });
+        
+        // Handle custom checkbox
+        const generateBioCheckbox = document.querySelector('input[name="generate_bio"]');
+        if (generateBioCheckbox) {
+            generateBioCheckbox.classList.remove('form-control-modern');
+            generateBioCheckbox.classList.add('custom-control-input');
+        }
+        
+        function showStep(step) {
+            document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+            document.querySelector(`.form-step[data-step="${step}"]`).classList.add('active');
+            
+            // Update progress
+            updateProgress(step);
+            
+            // Update buttons
+            document.getElementById('prevBtn').style.display = step === 1 ? 'none' : 'inline-flex';
+            document.getElementById('nextBtn').style.display = step === totalSteps ? 'none' : 'inline-flex';
+            document.getElementById('submitBtn').style.display = step === totalSteps ? 'inline-flex' : 'none';
+        }
+        
+        function updateProgress(step) {
+            const steps = document.querySelectorAll('.step');
+            const progressLine = document.getElementById('progressLine');
+            
+            steps.forEach((s, index) => {
+                const stepNumber = index + 1;
+                if (stepNumber < step) {
+                    s.classList.add('completed');
+                    s.classList.remove('active');
+                    s.querySelector('.step-number').style.display = 'none';
+                    s.querySelector('i').style.display = 'block';
+                } else if (stepNumber === step) {
+                    s.classList.add('active');
+                    s.classList.remove('completed');
+                    s.querySelector('.step-number').style.display = 'block';
+                    s.querySelector('i').style.display = 'none';
+                } else {
+                    s.classList.remove('active', 'completed');
+                    s.querySelector('.step-number').style.display = 'block';
+                    s.querySelector('i').style.display = 'none';
+                }
+            });
+            
+            // Update progress line
+            const progress = ((step - 1) / (totalSteps - 1)) * 100;
+            progressLine.style.width = progress + '%';
+        }
+        
+        document.getElementById('nextBtn').addEventListener('click', function() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
+            }
+        });
+        
+        document.getElementById('prevBtn').addEventListener('click', function() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        });
+        
+        // Initialize
+        showStep(currentStep);
+    </script>
+</body>
+</html>

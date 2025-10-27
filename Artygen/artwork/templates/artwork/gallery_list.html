@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Collections</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"> <!-- Ajout de Roboto -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        body {
+            background-color: #f7f7f7;
+            font-family: 'Roboto', sans-serif; /* Application de la police */
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 30px;
+            color: #333;
+            font-size: 2.5rem; /* Augmentation de la taille du titre */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* Ombre pour le titre */
+        }
+
+        .generate-art-btn {
+            display: inline-block;
+            background-color: #d4af37;
+            color: #fff;
+            padding: 15px 30px; /* Augmenté pour rendre le bouton plus grand */
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s; /* Transition pour le bouton */
+            margin: 20px auto; /* Centrage du bouton */
+        }
+
+        .generate-art-btn:hover {
+            background-color: #b68c2a;
+            text-decoration: none; /* Assure qu'il n'y a pas de soulignure au hover */
+            color: white;
+        }
+
+        .card {
+            background-color: #fff;
+            border: none; /* Suppression de la bordure par défaut */
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Ombre plus prononcée */
+            transition: transform 0.3s; /* Transition pour le hover */
+        }
+
+        .card:hover {
+            transform: translateY(-5px); /* Légère élévation au survol */
+        }
+
+        .card-body {
+            padding: 20px; /* Plus d'espacement à l'intérieur de la carte */
+        }
+
+        .card-title {
+            font-size: 1.5rem; /* Taille de la police du titre de la carte */
+            color: #333;
+            margin-bottom: 10px; /* Espacement inférieur pour le titre */
+        }
+
+        .card-text {
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px; /* Espacement au-dessus des boutons */
+        }
+
+        .button-container a {
+            background-color: #d4af37;
+            color: white;
+            padding: 10px 20px; /* Plus de padding pour les boutons */
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+            flex: 1;
+            margin: 0 5px;
+            transition: background-color 0.3s; /* Transition pour les boutons */
+        }
+
+        .button-container a:hover {
+            background-color: #b68c2a;
+        }
+
+        .delete-button {
+            background-color: #6c757d; /* Couleur grise */
+            color: white;
+            transition: background-color 0.3s; /* Transition pour le bouton de suppression */
+            border: none; /* Pas de bordure */
+            padding: 10px 20px; /* Espacement à l'intérieur */
+            border-radius: 5px; /* Coins arrondis */
+            text-decoration: none; /* Pas de soulignement */
+            cursor: pointer; /* Curseur pointeur */
+        }
+
+        .delete-button:hover {
+            background-color: #5a6268; /* Couleur grise plus foncée au survol */
+        }
+
+        /* Styles pour les alertes */
+        .alert {
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    {% include '../artwork/navbar.html' %}
+
+
+    <h1>My Collections</h1>
+
+    <div class="text-center mb-4">
+        <a href="#" class="generate-art-btn" data-toggle="modal" data-target="#createCollectionModal">
+            <i class="fas fa-plus-circle"></i> Create New Collection
+        </a>
+    </div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+<div class="container">
+    <div class="row">
+        {% if galleries %}
+            {% for gallery in galleries %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ gallery.name }}</h5>
+                            <p class="card-text">Artworks Number : {{ gallery.artworks.count }}</p>
+                            <div class="button-container">
+                                <a href="{% url 'collection_detail' gallery.id %}">See Collection</a>
+                                <button class="btn delete-button" data-toggle="modal" data-target="#deleteModal{{ gallery.id }}">
+                                    <i class="fas fa-trash-alt"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="deleteModal{{ gallery.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="deleteModalLabel">Confirmer la suppression</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    Êtes-vous sûr de vouloir supprimer la galerie "{{ gallery.name }}" ?
+                                </div>
+                                <div class="modal-footer">
+                                    <form method="POST" action="{% url 'collection_delete' gallery.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Aucune galerie trouvée.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Modal pour créer une nouvelle collection -->
+<div class="modal fade" id="createCollectionModal" tabindex="-1" role="dialog" aria-labelledby="createCollectionModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #d4af37; color: white;">
+                <h5 class="modal-title" id="createCollectionModalLabel">
+                    <i class="fas fa-plus-circle"></i> Create New Collection
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="POST" action="{% url 'collection_list' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="collectionName"><strong>Collection Name:</strong></label>
+                        <input type="text" class="form-control" id="collectionName" name="name" placeholder="Enter collection name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="collectionDescription"><strong>Description (optional):</strong></label>
+                        <textarea class="form-control" id="collectionDescription" name="description" rows="3" placeholder="Enter collection description"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn" style="background-color: #d4af37; color: white;">
+                        <i class="fas fa-save"></i> Create Collection
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

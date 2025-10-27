@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if form.instance.pk %}Edit Event{% else %}Create Event{% endif %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <style>
+        body {
+            background-color: #f4f6f9; /* Light grey background */
+            font-family: 'Roboto', sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            background-color: white;
+            padding: 30px;
+            margin: 50px auto;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #d4af37; /* Golden color for heading */
+        }
+        label {
+            font-weight: 500;
+            color: #555;
+        }
+        .form-control {
+            border-left: 0;
+        }
+        .input-group-text {
+            background-color: #d4af37;
+            color: white;
+            border: none;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        button {
+            width: 100%;
+            background-color: #d4af37 !important; /* Golden color */
+            color: white !important;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #b38e2c !important; /* Darker shade of gold on hover */
+        }
+        textarea {
+            resize: none;
+        }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .back-link:hover {
+            color: #b38e2c; /* Darker gold */
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    {% include '../events/navbar.html' %}
+
+    <div class="container">
+        <h2>{% if form.instance.pk %}Edit Event{% else %}Create Event{% endif %}</h2>
+        
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% if messages %}
+            <div class="alert alert-warning" role="alert">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %}
+            <!-- Title Field -->
+            <div class="form-group">
+                <label for="id_title">Title:</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                    </div>
+                    <input type="text" name="title" id="id_title" class="form-control" value="{{ form.title.value|default_if_none:'' }}" placeholder="Enter event title" required>
+                </div>
+            </div>
+
+            <!-- Description Field -->
+            <div class="form-group">
+                <label for="id_description">Description:</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-align-left"></i></span>
+                    </div>
+                    <textarea name="description" id="id_description" class="form-control" placeholder="Enter a description" required>{{ form.description.value|default_if_none:'' }}</textarea>
+                </div>
+            </div>
+
+            <!-- Location Field -->
+            <div class="form-group">
+                <label for="id_location">Location:</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                    </div>
+                    <input type="text" name="location" id="id_location" class="form-control" value="{{ form.location.value|default_if_none:'' }}" placeholder="Enter location" required>
+                </div>
+            </div>
+
+            <!-- Date Field -->
+            <div class="form-group">
+                <label for="id_date">Date:</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-calendar-day"></i></span>
+                    </div>
+                    <input type="datetime-local" name="date" id="id_date" class="form-control" value="{{ form.date.value|default_if_none:'' }}" required>
+                </div>
+            </div>
+
+            <!-- Capacity Field -->
+            <div class="form-group">
+                <label for="id_capacity">Capacity:</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-users"></i></span>
+                    </div>
+                    <input type="number" name="capacity" id="id_capacity" class="form-control" value="{{ form.capacity.value|default_if_none:'' }}" placeholder="Enter capacity" required>
+                </div>
+            </div>
+
+            <!-- Image Field -->
+            <div class="form-group">
+                <label for="id_image">Image:</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-image"></i></span>
+                    </div>
+                    <input type="file" name="image" id="id_image" class="form-control" accept="image/*">
+                </div>
+            </div>
+
+            <!-- Event Type Field -->
+            <div class="form-group">
+                <label for="id_event_type">Event Type:</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                    </div>
+                    <input type="text" name="event_type" id="id_event_type" class="form-control" value="{{ form.event_type.value|default_if_none:'' }}" placeholder="Enter event type" required>
+                </div>
+            </div>
+
+            <!-- Gallery Field -->
+            <div class="form-group">
+                <label for="id_gallery">Select Gallery:</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-images"></i></span>
+                    </div>
+                    <select name="gallery" id="id_gallery" class="form-control">
+                        <option value="">---------</option>
+                        {% for gallery in galleries %}
+                            <option value="{{ gallery.id }}"{% if form.instance.gallery == gallery %} selected{% endif %}>
+                                {{ gallery.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit"><i class="fas fa-save"></i> Save</button>
+       
+        </form>
+        
+        <a href="{% url 'event_list' %}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Event List</a>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

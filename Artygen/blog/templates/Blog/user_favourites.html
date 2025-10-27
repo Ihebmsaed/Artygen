@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap for responsive layout -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Favorites</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container1 {
+            max-width: 80%;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #b49a6a; /* Gold color */
+            font-size: 24px;
+        }
+
+        .search-bar {
+            padding: 10px;
+            border: 2px solid #b49a6a; /* Gold color */
+            border-radius: 4px;
+            width: 250px;
+            transition: border-color 0.3s;
+        }
+
+        .search-bar:focus {
+            border-color: #8c7b5a; /* Darker gold color */
+            outline: none;
+        }
+
+        .priority-buttons {
+            margin-bottom: 20px;
+        }
+
+        .priority-button {
+            padding: 10px 15px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #b49a6a; /* Gold color */
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .priority-button:hover {
+            background-color: #8c7b5a; /* Darker gold color */
+        }
+
+        .favourites-list {
+            margin-top: 20px;
+            max-height: 550px;
+            overflow-y: auto;
+        }
+
+        .favourite-item {
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            transition: background-color 0.3s;
+            display: flex;
+            flex-direction: column;
+            position: relative; /* Added for absolute positioning of the delete icon */
+        }
+
+        .favourite-item:hover {
+            background-color: #eaeaea;
+        }
+
+        .favourite-item h2 {
+            color: #333;
+            font-size: 20px;
+            margin: 0 0 5px;
+        }
+
+        .date-posted {
+            font-size: 0.9rem; /* Date size */
+            color: #a8a8a8; /* Date color */
+            margin: 5px 0;
+        }
+
+        .post-container {
+            margin-top: 15px;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+            flex-grow: 1;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-photo {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .post-title {
+            font-weight: bold;
+            font-size: 18px;
+            margin: 5px 0;
+        }
+
+        .continue-reading {
+            color: #007bff;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .post-thumbnail {
+            margin-top: 10px;
+            position: relative; /* For positioning the fullscreen icon */
+        }
+
+        .post-thumbnail__image {
+            max-width: 100%;
+            border-radius: 5px;
+            display: block;      /* Ensures the image is treated as a block element */
+            margin: 0 auto;     /* Centers the image horizontally */
+        }
+
+        .fullscreen-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            color: #007bff; /* Blue color for the icon */
+            font-size: 20px; /* Icon size */
+            background-color: white;
+            border-radius: 50%;
+            padding: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0, 0, 0, 0.8); /* Black w/ opacity */
+        }
+        
+
+
+        .modal-content {
+            margin-top: 70px;
+            margin-right:auto;
+            margin-left:auto;
+
+            width: 80%;
+            max-width: 700px;
+            justify-content: center;
+            display: flex;
+
+            align-items:center;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #ffffff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .delete-icon {
+            position: absolute; /* Positioned absolutely */
+            top: 10px;
+            right: 40px; /* Adjust for icon spacing */
+            cursor: pointer;
+            border:none;
+            padding:8px;
+            color: #fff; /* Red color */
+            background:#ff0000;
+            border-radius:7px;
+            font-size: 18px; /* Size of the icon */
+        }
+        .delete-icon:hover{
+            transition: border-color 0.3s, box-shadow 0.3s; /* Transition pour le hover */
+            color: #ff0000; /* Red color */
+            background:#fff;
+
+        }
+        /* Styles communs */
+        .priority {
+            padding: 10px;
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Ombre douce */
+            font-family: 'Playfair Display', serif;
+            font-weight: bold; /* Corrigé de 'blod' à 'bold' */
+            border-radius: 8px;
+            transition: border-color 0.3s, box-shadow 0.3s; /* Transition pour le hover */
+        }
+        
+        .priority:hover {
+            border-color: #007BFF; /* Changer la couleur de la bordure au hover */
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Ombre plus prononcée au hover */
+            outline: none; /* Enlever le contour par défaut */
+        }
+        
+        /* Styles spécifiques */
+        .priority1 {
+            background-color: #FF0000; /* Rouge */
+        }
+        
+        .priority2 {
+            background-color: green; /* Vert */
+        }
+        .priority3 {
+            background-color: #137C8B; /* Vert */
+        }
+        .note{
+            border: 1px solid #ccc;
+            padding:10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .back-btn {
+            display: inline-block;
+            background-color: #f0f0f0;  /* Couleur de fond par défaut */
+            color: #333;                /* Couleur du texte */
+            padding: 10px 20px;         /* Espace interne du bouton */
+            border-radius: 5px;         /* Coins arrondis */
+            text-decoration: none;      /* Retire la décoration de texte (utile pour les liens) */
+            font-weight: bold;
+            font-size: 14px;
+            border: 1px solid #ddd;     /* Bordure fine et discrète */
+            transition: background-color 0.3s ease, color 0.3s ease; /* Transition pour le hover */
+            cursor: pointer;            /* Curseur en forme de main */
+        }
+        
+        .back-btn:hover {
+            background-color: #333;     /* Couleur de fond au survol */
+            color: #fff;                /* Couleur du texte au survol */
+            border-color: #333;         /* Changer la couleur de la bordure au survol */
+        }
+        
+    </style>
+</head>
+<body>
+    {% include '../Blog/navbar.html' %}
+
+    <div class="container1">
+        <header>
+            <a href="{% url 'post-home' %}" class="back-btn">Back to Blog</a> <!-- Replace with the correct URL name -->
+
+            <h1>My Favorites</h1>
+            <input type="text" class="search-bar" id="searchInput" placeholder="Search a favorite..." onkeyup="filterFavourites()">
+        </header>
+
+        <div class="priority-buttons">
+            <button class="priority-button" onclick="filterByPriority('High')">High</button>
+            <button class="priority-button" onclick="filterByPriority('Medium')">Medium</button>
+            <button class="priority-button" onclick="filterByPriority('Low')">Low</button>
+            <button class="priority-button" onclick="resetFilter()">All</button>
+        </div>
+
+        <div class="favourites-list" id="favouritesList">
+            {% for favourite in favourites %}
+            <div class="favourite-item" data-priority="{{ favourite.priority }}">
+                <form action="{% url 'favourite-delete' favourite.pk %}" method="POST" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="fas fa-trash delete-icon"></button>
+                </form>
+                {%if  favourite.priority == 'High'   %}
+                    <p>
+                        <strong>Priority:</strong> <span class="priority priority1">{{ favourite.priority }}</span>
+                    </p>
+                    {%elif  favourite.priority == 'Medium'   %}
+                    <p>
+                        <strong>Priority:</strong> <span class="priority priority2">{{ favourite.priority }}</span>
+                    </p>
+                    {%elif  favourite.priority == 'Low'   %}
+
+                    <p>
+                        <strong>Priority:</strong> <span class="priority priority3">{{ favourite.priority }}</span>
+                    </p>
+                    {% endif %}
+               
+                <div>
+                    <p class="date-posted">Added on: {{ favourite.added_on|date:"d M Y" }}</p>
+                   
+                    <p class="note">
+                        <i class="fas fa-info-circle" style="margin-right: 5px;"></i>
+                        Note: {{ favourite.note }}
+                    </p>
+                                        <div class="post-container">
+                        <div class="post-header">
+                            <img src="{{ favourite.post.author_profile_photo }}" alt="{{ favourite.post.author.username }}" class="user-photo">
+                            <div>
+                                <h5 class="mb-0">{{ favourite.post.author }}</h5>
+                                <p class="date-posted">{{ favourite.post.date_posted|date:"d M Y" }}</p>
+                            </div>
+                        </div>
+                        <p class="post-title">{{ favourite.post.title }}</p>
+                        <p>
+                            <i class="fas fa-paint-brush art-icon"></i>
+                            <span id="truncated-{{ favourite.post.id }}">
+                                {{ favourite.post.content|truncatewords:90 }}
+                            </span>
+                            {% if favourite.post.content|length > 90 %}
+                                <span id="full-text-{{ favourite.post.id }}" style="display:none;">
+                                    {{ favourite.post.content }} <!-- Show full text -->
+                                </span>
+                                <span class="continue-reading" id="toggle-text-{{ favourite.post.id }}" onclick="toggleText({{ favourite.post.id }})">
+                                    Continue reading
+                                </span>
+                            {% endif %}
+                        </p>
+                        <div class="post-thumbnail">
+                            {% if favourite.post.image %}
+                                <img src="{{ favourite.post.image.url }}" alt="{{ favourite.post.title }}" class="post-thumbnail__image">
+                                <i class="fas fa-expand-arrows-alt fullscreen-icon" onclick="openModal('{{ favourite.post.image.url }}')"></i>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p>No favorites found.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Modal Structure -->
+    <div id="myModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img class="modal-content" id="modalImage" alt="Fullscreen Image">
+    </div>
+
+    <script>
+        function toggleText(postId) {
+            const truncated = document.getElementById(`truncated-${postId}`);
+            const fullText = document.getElementById(`full-text-${postId}`);
+            const toggleText = document.getElementById(`toggle-text-${postId}`);
+
+            if (fullText.style.display === "none") {
+                fullText.style.display = "inline"; // Show full text
+                truncated.style.display = "none"; // Hide truncated text
+                toggleText.textContent = "Show less"; // Change text
+            } else {
+                fullText.style.display = "none"; // Hide full text
+                truncated.style.display = "inline"; // Show truncated text
+                toggleText.textContent = "Continue reading"; // Reset text
+            }
+        }
+
+        function filterFavourites() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const items = document.querySelectorAll('.favourite-item');
+
+            items.forEach(item => {
+                const title = item.querySelector('h2').textContent.toLowerCase();
+                item.style.display = title.includes(input) ? '' : 'none';
+            });
+        }
+
+        function filterByPriority(priority) {
+            const items = document.querySelectorAll('.favourite-item');
+
+            items.forEach(item => {
+                if (item.dataset.priority === priority) {
+                    item.style.display = ''; // Show
+                } else {
+                    item.style.display = 'none'; // Hide
+                }
+            });
+        }
+
+        function resetFilter() {
+            const items = document.querySelectorAll('.favourite-item');
+            items.forEach(item => {
+                item.style.display = ''; // Show all
+            });
+        }
+
+        function deleteFavourite(favouriteId) {
+            // Implement deletion logic here
+            console.log(`Delete favourite with ID: ${favouriteId}`);
+        }
+
+        function openModal(imageUrl) {
+            const modal = document.getElementById("myModal");
+            const modalImg = document.getElementById("modalImage");
+            modal.style.display = "block";
+            modalImg.src = imageUrl;
+        }
+
+        function closeModal() {
+            const modal = document.getElementById("myModal");
+            modal.style.display = "none";
+        }
+
+        // Close modal when clicking outside of the image
+        window.onclick = function(event) {
+            const modal = document.getElementById("myModal");
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>

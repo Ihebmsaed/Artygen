@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add artwork </title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f7f7f7; /* Fond gris clair */
+        }
+
+        .card {
+            max-width: 600px;
+            margin: auto;
+            margin-top: 50px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0; /* Légère bordure gris clair */
+        }
+
+        h2 {
+            color: #333; /* Couleur du titre en gris foncé */
+        }
+
+        /* Champs de formulaire */
+        .form-control {
+            background-color: #f8f8f8; /* Fond gris clair pour les champs */
+            border: 1px solid #d4d4d4; /* Bordure grise */
+            border-radius: 5px;
+        }
+
+        .form-control:focus {
+            border-color: #d4af37; /* Bordure or au focus */
+            box-shadow: 0 0 5px rgba(212, 175, 55, 0.5); /* Ombre dorée */
+        }
+
+        /* Bouton principal */
+        .btn-primary {
+            background-color: #d4af37; /* Or */
+            border-color: #d4af37;
+        }
+
+        .btn-primary:hover {
+            background-color: #b68c2a; /* Or plus foncé au survol */
+            border-color: #b68c2a;
+        }
+
+        /* Bouton secondaire */
+        .btn-secondary {
+            background-color: #6c757d; /* Gris pour le bouton retour */
+            border-color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    {% include '../artwork/navbar.html' %}
+
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title text-center mb-4">Add Artwork</h2>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    {{ form.title }}
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="category">Category</label>
+                        {{ form.category }}
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="tags">Tags</label>
+                        {{ form.tags }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    {{ form.description }}
+                </div>
+
+                <div class="form-group">
+                    <label for="file">File</label>
+                    {{ form.file }}
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Create</button>
+            </form>
+            <a href="{% url 'artwork_list' %}" class="btn btn-secondary btn-block mt-3">Back to list</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

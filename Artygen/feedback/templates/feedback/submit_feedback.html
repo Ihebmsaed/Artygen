@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Feedback</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            background-color: #444444; /* Darker gray background */
+
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: hsl(0, 0%, 58%); /* Dark gray background */
+            color: #d4af37; /* Gold text color */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #d4af37; /* Gold color */
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-control {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-control label {
+            font-size: 16px;
+            color: #d4af37; /* Gold label color */
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .form-control input,
+        .form-control textarea {
+            padding: 10px;
+            border: 1px solid #d4af37; /* Gold border color */
+            background-color: #444444; /* Darker gray background */
+            color: #d4af37; /* Gold text color */
+            border-radius: 4px;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .form-control input:focus,
+        .form-control textarea:focus {
+            border-color: #ffd700; /* Bright gold border on focus */
+            outline: none;
+        }
+
+        .rating {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .rating input {
+            display: none;
+        }
+
+        .rating label {
+            font-size: 24px;
+            color: #444444; /* Gray for unselected stars */
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .rating label.selected,
+        .rating label:hover,
+        .rating label:hover ~ label {
+            color: #ffd700; /* Gold color for selected stars */
+        }
+
+        button {
+            background-color: #d4af37; /* Gold button color */
+            color: #333333; /* Dark gray text color */
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #ffd700; /* Lighter gold on hover */
+        }
+
+        .btn-secondary {
+            background-color: #555555;
+            color: #d4af37;
+        }
+
+        .btn-secondary:hover {
+            background-color: #777777;
+        }
+
+        .cancel-btn {
+            color: inherit; /* Inherit button text color */
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">        
+
+        <h1><i class="fas fa-comments"></i> Submit Feedback</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-control">
+                <label for="artwork_id">Select Artwork:</label>
+                <select name="artwork_id" id="artwork_id" required>
+                    {% for artwork in artworks %}
+                        <option value="{{ artwork.id }}">{{ artwork.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+                        <div class="form-control">
+                <label for="feedback">Your Comment:</label>
+                <textarea name="comment" id="feedback" placeholder="Enter your comment" rows="4" required></textarea>
+            </div>
+            <div class="form-control rating">
+                <span>Rate Us:</span>
+                <button class="btn btn-secondary" onclick="window.location.href='/feedback/recommendations/'">Recommendations</button>
+                <label for="star1">
+                    <input type="radio" name="rating" id="star1" value="1" required />
+                    <i class="fas fa-star"></i>
+                </label>
+                <label for="star2">
+                    <input type="radio" name="rating" id="star2" value="2" required />
+                    <i class="fas fa-star"></i>
+                </label>
+                <label for="star3">
+                    <input type="radio" name="rating" id="star3" value="3" required />
+                    <i class="fas fa-star"></i>
+                </label>
+                <label for="star4">
+                    <input type="radio" name="rating" id="star4" value="4" required />
+                    <i class="fas fa-star"></i>
+                </label>
+                <label for="star5">
+                    <input type="radio" name="rating" id="star5" value="5" required />
+                    <i class="fas fa-star"></i>
+                </label>
+            </div>
+            <button type="submit">Submit</button>
+            <button class="btn btn-secondary"><a href="/feedback/feedbacks" class="cancel-btn">Cancel</a></button>
+        </form>
+    </div>
+
+    <script>
+        const stars = document.querySelectorAll('.rating input');
+        const labels = document.querySelectorAll('.rating label');
+
+        labels.forEach(label => {
+            label.addEventListener('click', () => {
+                const currentStar = label.querySelector('input').value;
+                stars.forEach((star, index) => {
+                    if (index < currentStar) {
+                        star.parentNode.classList.add('selected');
+                    } else {
+                        star.parentNode.classList.remove('selected');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

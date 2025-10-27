@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if form.instance.pk %}Edit Gallery{% else %}Create Gallery{% endif %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <style>
+        body {
+            background-color: #f4f6f9; /* Light grey background */
+            font-family: 'Roboto', sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            background-color: white;
+            padding: 30px;
+            margin: 50px auto;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #d4af37; /* Golden color for heading */
+        }
+        label {
+            font-weight: 500;
+            color: #555;
+        }
+        .form-control {
+            border-left: 0;
+        }
+        .input-group-text {
+            background-color: #d4af37;
+            color: white;
+            border: none;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        button {
+            width: 100%;
+            background-color: #d4af37 !important; /* Golden color */
+            color: white !important;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #b38e2c !important; /* Darker shade of gold on hover */
+        }
+        textarea {
+            resize: none;
+        }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .back-link:hover {
+            color: #b38e2c; /* Darker gold */
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    {% include '../feedback/navbar.html' %}
+
+    <div class="container">
+        <h2>{% if form.instance.pk %}Edit Gallery{% else %}Create Gallery{% endif %}</h2>
+        
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% if messages %}
+            <div class="alert alert-warning" role="alert">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Owner Field (Hidden) -->
+            <input type="hidden" name="owner" value="{{ user.id }}">
+
+            <!-- Name Field -->
+            <div class="form-group">
+                <label for="id_name">Gallery Name:</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-image"></i></span>
+                    </div>
+                    <input type="text" name="name" id="id_name" class="form-control" value="{{ form.name.value|default_if_none:'' }}" placeholder="Enter gallery name" required>
+                </div>
+            </div>
+
+            <!-- Location Field -->
+            <div class="form-group">
+                <label for="id_location">Location:</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                    </div>
+                    <input type="text" name="location" id="id_location" class="form-control" value="{{ form.location.value|default_if_none:'' }}" placeholder="Enter location" required>
+                </div>
+            </div>
+
+            <!-- Theme Field -->
+            <div class="form-group">
+                <label for="id_theme">Theme:</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-paint-brush"></i></span>
+                    </div>
+                    <input type="text" name="theme" id="id_theme" class="form-control" value="{{ form.theme.value|default_if_none:'' }}" placeholder="Enter theme" required>
+                </div>
+            </div>
+
+            <!-- Description Field -->
+            <div class="form-group">
+                <label for="id_description">Description:</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-align-left"></i></span>
+                    </div>
+                    <textarea name="description" id="id_description" class="form-control" placeholder="Enter a description" required>{{ form.description.value|default_if_none:'' }}</textarea>
+                </div>
+            </div>
+
+            <button type="submit"><i class="fas fa-save"></i> Save</button>
+        </form>
+        
+        <a href="{% url 'gallery_list' %}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Gallery List</a>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

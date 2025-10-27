@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ event.title }} - Participation</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    {% include '../events/navbar.html' %}
+
+    <div class="container">
+        <h2>{{ event.title }}</h2>
+        <p>Your request to participate has been accepted!</p>
+        <p>It's taking place at {{ event.location }} around {{ event.date }}. Don't be late!</p>
+        <a href="{% url 'event_list' %}" class="btn btn-primary">Back to Events</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Badges des Utilisateurs</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+         h1 { 
+            color: #ffd700; 
+            
+        }
+         body { 
+            font-family: 'Arial', sans-serif; 
+            background-color: #444444; 
+            margin: 0; 
+            padding: 20px; 
+        }
+        .profile-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    {% include '../feedback/navbar.html' %}
+
+<div class="container mt-5">
+    <!-- Bouton de retour -->
+    <a href="/feedback/feedbacks" class="btn btn-primary mb-3">
+        <i class="fas fa-arrow-left"></i> Retour aux Feedbacks
+    </a>
+
+    <h1>Badges de tous les utilisateurs</h1>
+
+    <!-- Search input -->
+    <div class="form-group">
+        <input type="text" id="searchInput" class="form-control" placeholder="Rechercher par nom d'utilisateur ou badge...">
+    </div>
+
+    <div class="row" id="userBadgesList">
+        {% for user, badges in user_badges.items %}
+            <div class="col-md-4 mb-4 user-badge-item">
+                <div class="card">
+                    <div class="text-center">
+                        {% if user.profile.photo %}
+                            <img src="{{ user.profile.photo.url }}" alt="Photo de {{ user.username }}" class="profile-photo">
+                        {% else %}
+                            <img src="{% static 'images/default-profile.png' %}" alt="Photo de profil par défaut" class="profile-photo">
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ user.username }}</h5>
+                        <p class="card-text">
+                            Nom: {{ user.first_name }} {{ user.last_name }}<br>
+                            Email: {{ user.email }}<br>
+                        </p>
+                        <h6>Badges:</h6>
+                        {% if badges %}
+                            <ul>
+                                {% for user_badge in badges %}
+                                    <li>{{ user_badge.badge.name }} - {{ user_badge.badge.description }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <span>Aucun badge</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#searchInput').on('keyup', function() {
+            var value = $(this).val().toLowerCase();
+            $('#userBadgesList .user-badge-item').filter(function() {
+                // Get the user's name and badges
+                var username = $(this).find('.card-title').text().toLowerCase();
+                var badges = $(this).find('ul').text().toLowerCase();
+                
+                // Check if either the username or any badge name includes the search term
+                $(this).toggle(username.indexOf(value) > -1 || badges.indexOf(value) > -1);
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

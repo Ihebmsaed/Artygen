@@ -1,0 +1,355 @@
+
+.continue-reading {
+    font-weight: bold;
+    color: #d4af37 !important;
+    cursor: pointer;
+    margin-top: 10px;
+}
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f8f8; /* Couleur de fond douce */
+    color: #333; /* Couleur du texte principale */
+    padding: 20px;
+}
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    text-align: center;
+    color: #d4af37 ; /* Couleur rose pour le titre */
+    margin: 20px 0;
+    font-size: 3rem; /* Taille du titre */
+}
+
+.post-container {
+    max-width: 600px; /* Limite la largeur du post */
+    margin: 20px auto;
+    background-color: #ffffff; /* Couleur de fond du post */
+    padding: 15px;
+    border-radius: 12px; /* Coins arrondis */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombre légère */
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.user-photo {
+    width: 80px; /* Taille de la photo de l'utilisateur */
+    height: 80px;
+    border-radius: 50%; /* Rendre l'image ronde */
+    margin-right: 10px; /* Espacement à droite de l'image */
+    border: 2px solid #d4af37 ; /* Bordure pour l'image de profil */
+}
+.user-photo-comt{  width: 40px; /* Taille de la photo de l'utilisateur */
+height: 40px;
+border-radius: 50%; /* Rendre l'image ronde */
+margin-right: 10px; /* Espacement à droite de l'image */
+border: 2px solid #d4af37 ; /* Bordure pour l'image de profil */}
+.post-content {
+    margin: 10px 0; /* Espacement autour du contenu */
+}
+
+.post-title {
+    font-weight: bold; /* Met le titre en gras */
+    font-size: 1.5rem; /* Taille du titre */
+    margin-bottom: 5px; /* Espacement en dessous du titre */
+    color: #d4af37 ; /* Couleur du titre */
+}
+
+.date-posted {
+    font-size: 0.9rem; /* Taille de la date */
+    color: #a8a8a8; /* Couleur de la date */
+    text-align: right; /* Alignement à droite */
+}
+
+.art-icon {
+    color: #f39c12; /* Couleur de l'icône d'art */
+    margin-right: 5px; /* Espacement à droite de l'icône */
+}
+
+/* Comment section styling */
+.comment-section {
+    margin-top: 20px;
+}
+.comments-list::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8; /* Couleur du pouce lors du survol */
+}
+
+.comments-list {
+    max-height: 200px; /* Hauteur maximale pour le défilement */
+    overflow-y: auto; /* Défilement vertical */
+    margin-bottom: 10px;
+    border: 1px solid #e0e0e0; /* Bordure autour de la section de commentaires */
+    border-radius: 5px; /* Coins arrondis */
+    padding: 10px; /* Espacement interne */
+    background-color: #f9f9f9; /* Couleur de fond des commentaires */
+}
+.comments-list::-webkit-scrollbar {
+    width: 8px; /* Largeur du scrollbar */
+}
+.comments-list::-webkit-scrollbar-thumb {
+    background: #d4af37 ; /* Couleur du pouce du scrollbar */
+    border-radius: 10px; /* Coins arrondis pour le pouce */
+}
+.comment {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #ffffff; /* Couleur de fond des commentaires */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombre légère */
+}
+
+.comment-input {
+    width: 100%; /* Remplir la largeur du conteneur */
+    max-width: 500px; /* Largeur maximum pour les grands écrans */
+    height: 100px; /* Hauteur fixe */
+    padding: 10px; /* Espacement intérieur */
+    font-size: 16px; /* Taille de police pour la lisibilité */
+    border: 1px solid #ccc; /* Bordure claire */
+    border-radius: 5px; /* Coins arrondis */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Ombre légère */
+    transition: border-color 0.3s, box-shadow 0.3s; /* Transition douce */
+}
+
+.comment-input:focus {
+    border-color: #007BFF; /* Changer la couleur de la bordure au focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Ombre plus prononcée au focus */
+    outline: none; /* Enlever le contour par défaut */
+}
+
+.comment-input::placeholder {
+    color: #aaa; /* Couleur du texte d'espace réservé */
+    font-style: italic; /* Italique pour le texte d'espace réservé */
+}
+.comment {
+position: relative;
+display: flex;
+align-items: center;
+}
+
+.comment .fa-trash {
+position: absolute;
+right: 10px; /* Ajustez la valeur pour l'espacement souhaité */
+}
+
+
+button {
+    padding: 10px 15px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%; /* Largeur complète pour le bouton */
+}
+
+button:hover {
+}
+
+.like-dislike-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Espace entre les éléments */
+    margin-top: 10px;
+}
+
+.like {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #657786;
+}
+
+.like.liked {
+    color: #d4af37 ; /* Couleur pour le like */
+}
+
+.like:hover {
+    color: #d4af37 ; /* Couleur lors du survol */
+}
+
+.like .count {
+    margin-left: 5px;
+    font-weight: bold;
+}
+.comment-button {
+    padding: 10px 15px;
+    background-color: #d4af37 ; /* Couleur du bouton */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%; /* Largeur complète pour le bouton */
+    margin-top: 10px; /* Espacement au-dessus du bouton */
+}
+
+.comment-button:hover {
+    background-color: #a8a8a8; /* Couleur lors du survol */}
+.comment-icon {
+    font-size: 16px; /* Ajuste la taille de l'icône de commentaire */
+    color: #657786;
+    cursor: pointer; /* Change le curseur lors du survol */
+}
+
+/* Responsive media queries */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem; /* Réduit la taille du titre sur mobile */
+    }
+
+    .post-container {
+        padding: 10px; /* Réduit l'espacement interne sur mobile */
+    }
+
+}
+.modal-content {
+    border-radius: 10px; /* Coins arrondis pour le modal */
+}
+
+.modal-header {
+    background-color: none; /* Couleur de fond personnalisée */
+    color: #fff; /* Couleur du texte */
+}
+
+.modal-title {
+    font-size: 24px; /* Taille du texte */
+    font-weight: bold; /* Gras */
+    color: #007bff; /* Couleur du texte */
+    text-align: center; /* Centrer le texte */
+    margin: 0; /* Élimine les marges */
+}
+
+
+.close {
+    color: #fff; /* Couleur de l'icône de fermeture */
+    width:20px !important;
+}
+
+.form-group label {
+    font-weight: bold; /* Labels en gras */
+    margin-bottom: 0.5rem; /* Espace en dessous des labels */
+}
+
+.form-control,
+.form-control-file {
+    border-radius: 5px; /* Coins arrondis pour les champs de formulaire */
+    box-shadow: none; /* Enlever l'ombre par défaut */
+    transition: border-color 0.3s; /* Transition douce pour la bordure */
+}
+
+.form-control:focus,
+.form-control-file:focus {
+    border-color: #0056b3; /* Couleur de bordure au focus */
+    box-shadow: 0 0 5px rgba(0, 86, 179, 0.5); /* Ombre au focus */
+}
+
+.btn {
+    background:none;
+    color: #000; /* Couleur du texte */
+    border: none; /* Supprime les bordures */
+}
+
+.btn:hover {
+    opacity: 0.9; /* Effet au survol */
+}
+.text-center {
+    background-color: #f8f9fa; /* Couleur de fond gris clair */
+    padding: 20px; /* Espace intérieur */
+    border-radius: 10px; /* Coins arrondis */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Ombre pour un effet de profondeur */
+}
+
+.btn-custom {
+    background-color:  ; /* Couleur du bouton personnalisé */
+    border-color: #d4af37 ; /* Couleur de la bordure */
+    color: 808080; /* Couleur du texte */
+}
+
+.btn-custom:hover {
+    background-color: #d4af37 ; /* Couleur au survol */
+    border-color: #d4af37 ; /* Couleur de la bordure au survol (plus sombre) */
+
+color:#fff;}
+
+.btn-custom-secondary {
+    background-color: none ; /* Couleur du bouton secondaire personnalisé */
+    border-color: #6c757d; /* Couleur de la bordure */
+    color: 808080; /* Couleur du texte */
+}
+
+.btn-custom-secondary:hover {
+    background-color: #d4af37 ; /* Couleur au survol */
+    border-color: #4e555b; /* Couleur de la bordure au survol (plus sombre) */
+color:#fff;  }
+
+.comment {
+transition: opacity 0.3s ease-out; /* Ajouter une transition */
+}
+
+.comment.hidden {
+opacity: 0; /* Rendre le commentaire transparent */
+height: 0; /* Réduire la hauteur pour cacher complètement */
+overflow: hidden; /* Éviter de montrer du contenu */
+}
+
+/* Style pour l'image du post */
+.post-thumbnail {
+display: flex;
+justify-content: center; /* Centre l'image horizontalement */
+margin-bottom: 15px;
+overflow: hidden; /* Permet de couper l'image si elle dépasse la taille */
+}
+
+.post-thumbnail__image {
+width: 250px; /* Largeur optimisée pour un affichage compact */
+height: 200px; /* Hauteur optimisée pour garder l'image carrée */
+object-fit: cover; /* Garde le ratio de l'image et remplit le conteneur */
+border-radius: 10px; /* Coins arrondis */
+}
+
+#suggestions {
+border: 1px solid #ccc;
+max-height: 150px;
+overflow-y: auto;
+position: absolute; /* Si vous souhaitez un affichage en overlay */
+}
+
+.generated-content {
+max-height: 200px;
+overflow-y: auto;
+}
+.suggestion-item {
+display: flex;
+align-items: center;
+padding: 8px;
+margin-top: 8px;
+border-radius: 5px;
+background-color: #f9f9f9;
+position: relative;
+}
+.copy-button {
+margin-left: auto;
+cursor: pointer;
+color: #007bff;
+font-size: 1.2em;
+}
+.copy-button:hover {
+color: #0056b3;
+}
+
+.suggestion-item:hover {
+background-color: #f0f0f0;
+}{% comment %} 
+#generated-content .suggestion-item {
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
+#generated-content .suggestion-item button {
+color: #007bff;
+text-decoration: none;
+}
+#generated-content .suggestion-item button:hover {
+text-decoration: underline;
+} {% endcomment %}

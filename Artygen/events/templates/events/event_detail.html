@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ event.title }}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f7f7f7;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .event-image {
+            border-radius: 10px;
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+            object-fit: cover;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .event-details {
+            margin-top: 20px;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .btn-custom {
+            background-color: #d4af37;
+            color: white;
+        }
+
+        .btn-custom:hover {
+            background-color: #b68c2a;
+        }
+
+        .golden-line {
+            border-top: 2px solid #d4af37;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    {% include '../events/navbar.html' %}
+
+    <div class="container">
+        <h1>{{ event.title }}</h1>
+        {% if event.image %}
+            <img src="{{ event.image.url }}" class="event-image" alt="{{ event.title }}">
+        {% else %}
+            <img src="https://via.placeholder.com/600x400" class="event-image" alt="No Image Available">
+        {% endif %}
+
+        <div class="golden-line"></div>
+
+        <div class="event-details">
+            <p class="label">Date: {{ event.date|date:"F j, Y" }}</p>
+            <p class="label">Location: {{ event.location }}</p>
+            <p class="label">Capacity: {{ event.capacity }}</p>
+            <p class="label">Event Type: {{ event.event_type }}</p>
+            <p class="label">Gallery: {% if event.gallery %}{{ event.gallery.name }}{% else %}No Gallery{% endif %}</p>
+            <p class="label">Description: {{ event.description }}</p>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'event_update' event.pk %}" class="btn btn-custom">Edit Event</a>
+            <form action="{% url 'event_delete' event.pk %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Delete Event</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Optional Font Awesome for icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>

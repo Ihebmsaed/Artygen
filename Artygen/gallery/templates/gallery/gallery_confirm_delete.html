@@ -1,0 +1,12 @@
+<!-- gallery/templates/gallery/gallery_confirm_delete.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Delete Gallery</h2>
+  <p>Are you sure you want to delete "{{ gallery.name }}"?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Yes, delete</button>
+  </form>
+  <a href="{% url 'gallery_list' %}">Cancel</a>
+{% endblock %}

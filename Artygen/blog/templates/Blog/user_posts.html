@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <title>Mes Publications - Blog d'Art</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap for responsive layout -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f9f9f9;
+            color: #444;
+            padding: 20px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            text-align: center;
+            color: #d4af37;
+            margin: 40px 0;
+            font-size: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 10px;
+            margin: 20px auto;
+            font-size: 1.2rem;
+            border: 2px solid #d4af37;
+            border-radius: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            position: relative;
+            margin-top: 20px;
+        }
+
+        .gallery {
+            display: flex;
+            gap: 30px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding-bottom: 10px;
+        }
+
+        .post-container {
+            min-width: 300px; /* Largeur minimale */
+            max-width: 300px; /* Largeur maximale */
+            flex: 0 0 auto; /* Pas d'élargissement */
+            scroll-snap-align: center; /* Alignement au centre */
+            height: 450px; /* Hauteur fixe */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Espace entre les éléments */
+            border: 1px solid #ccc;
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden; /* Empêche le débordement */
+        }
+
+        .scroll-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #d4af37;
+            color: white;
+            border: none;
+            padding: 10px;
+            z-index: 1;
+           
+            width:30px;
+            cursor: pointer;
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease;
+        }
+        .scroll-button:hover {
+            opacity:0.5;
+            background-color: gray;
+
+           
+        }
+
+        .scroll-left { left: 0; }
+        .scroll-right { right: 0; }
+
+        .gallery-item {
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%; /* S'assurer que l'élément prend toute la hauteur */
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-10px);
+        }
+
+        .post-image {
+            width: 100%;
+            height: 150px; /* Hauteur fixe pour l'image */
+            object-fit: cover;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .post-title {
+            font-family: 'Playfair Display', serif;
+            color: #333;
+            font-size: 1.75rem;
+            margin: 10px 0;
+            font-weight: bold;
+            height: 60px; /* Hauteur fixe pour le titre */
+            overflow: hidden; /* Empêche le débordement */
+            text-overflow: ellipsis; /* Ajoute des points de suspension si le texte déborde */
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2; /* Limite à 2 lignes */
+        }
+
+        .post-content {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            flex-grow: 1; /* Permet au contenu de s'étendre */
+            overflow: hidden; /* Empêche le débordement */
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3; /* Limite à 3 lignes */
+            height: 70px; /* Hauteur fixe pour le contenu */
+        }
+
+        .post-meta {
+            font-size: 0.9rem;
+            color: #777;
+            margin-bottom: 15px;
+        }
+
+        .action-buttons {
+            margin-top: auto; /* Push the buttons to the bottom */
+            display: flex; /* Use flexbox to align buttons */
+            justify-content: space-between; /* Space between buttons */
+            width: 100%; /* Full width for alignment */
+        }
+
+        .btn {
+            border-radius: 50px;
+            padding: 10px 20px;
+            margin: 5px 0;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn-info {
+            background-color: #d4af37;
+            color: #fff;
+            border:none;
+            box-shadow: 0 4px 8px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-info:hover {
+            background-color: #808080;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(212, 175, 55, 0.4);
+        }
+        .btn-delete {
+            background-color: #808080;
+            color: #fff;
+            border:none;
+            box-shadow: 0 4px 8px rgba(212, 175, 55, 0.3);
+        }
+        .btn-delete:hover {
+            background-color: #801916;
+            transform: translateY(-2px);
+            color: #fff;
+            box-shadow: 0 6px 12px rgba(212, 175, 55, 0.4);
+        }
+
+
+        .continue-reading {
+            font-weight: bold;
+            color: #d4af37;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .empty {
+            font-size: 24px; /* Taille de police */
+            color: #333; /* Couleur du texte */
+            text-align: center; /* Centre le texte à l'intérieur du paragraphe */
+            margin-left:20rem;
+            padding: 20px; /* Ajoute un peu d'espace autour du texte */
+            border-radius: 8px; /* Bords arrondis */
+            border:none;
+        }
+
+        .likes {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #d4af37;
+            margin-bottom: 15px;
+        }
+
+        .likes i {
+            margin-right: 5px; /* Space between icon and text */
+        }
+        .hethai{margin: 7px;}
+    </style>
+    {% include '../Blog/navbar.html' %}
+
+</head>
+
+<body>
+
+
+    <h1>My Posts</h1>
+
+    <!-- Barre de recherche -->
+    <input type="text" class="search-bar" id="searchBar" placeholder="Search by title..." onkeyup="filterPosts()">
+
+    <div class="container">
+        <button class="scroll-button scroll-left" onclick="scrollGallery(-1)">&#10094;</button>
+
+        <div class="gallery" id="gallery">
+            {% for post in posts %}
+            <div class="post-container gallery-item">
+                <img src="../../../profile_photos/pic.jpg" alt="{{ post.title }}" class="post-image">
+                <div class="hethai">
+                    <div class="post-title">{{ post.title }}</div>
+                    <p class="post-content">
+                        {{ post.content|truncatewords:10 }} <!-- Show first 50 words -->
+                        {% if post.content|length > 50 %}
+                            <span class="continue-reading" onclick="location.href='{% url 'post-detail' post.pk %}'">Continue Reading
+  </span>
+                        {% endif %}
+                    </p>
+                    <div class="likes">
+                        <i class="fas fa-thumbs-up"></i>{{ post.likes_count }}Like
+                    </div>
+                    <div class="post-meta">Published on {{ post.date_posted }}</div>
+                    <div class="action-buttons">
+                        <a href="{% url 'edit-post' post.pk %}" class="btn btn-info"><i class="fas fa-edit"></i>Edit</a>
+                        <form action="{% url 'post-delete' post.pk %}" method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-delete"><i class="fas fa-trash"></i>Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {%empty%}
+            <p class="empty"> You don't have any blog yet!</p>
+            {% endfor %}
+        </div>
+
+        <button class="scroll-button scroll-right" onclick="scrollGallery(1)">&#10095;</button>
+    </div>
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        function scrollGallery(direction) {
+            const gallery = document.getElementById('gallery');
+            const scrollAmount = direction * 300; // Adjust this value for faster/slower scroll
+            gallery.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }
+
+        function filterPosts() {
+            const searchValue = document.getElementById('searchBar').value.toLowerCase();
+            const posts = document.querySelectorAll('.post-container');
+
+            posts.forEach(post => {
+                const title = post.querySelector('.post-title').textContent.toLowerCase();
+                post.style.display = title.includes(searchValue) ? 'flex' : 'none'; // Toggle display based on search
+            });
+        }
+    </script>
+</body>
+
+</html>

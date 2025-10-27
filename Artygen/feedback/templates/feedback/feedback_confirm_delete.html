@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Deletion</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { 
+            background-color: #444444; 
+            font-family: Arial, sans-serif;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            background-color: #fff;
+        }
+        .card-title {
+            color: #df2e28; /* Rouge pour accentuer la suppression */
+            font-weight: bold;
+        }
+        .card-text {
+            color: #555; /* Gris foncé pour le texte */
+        }
+        .btn-danger {
+            border: none;
+            background-color: #df2e28; /* Doré plus foncé au survol */
+
+            color: #333; /* Texte en couleur sombre */
+            font-weight: bold;
+        }
+        .btn-danger:hover {
+            background-color: #ec6561; /* Doré pour le bouton de confirmation */
+
+        }
+        .btn-secondary {
+            background-color: #6c757d; /* Gris pour le bouton Annuler */
+            border: none;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h2 class="card-title text-danger">Confirm Deletion</h2>
+                    <p class="card-text">Are you sure you want to delete this feedback?</p>
+                    <form method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-lg">Yes, delete</button>
+                    </form>
+                    <a href="{% url 'feedback:feedback_list' %}" class="btn btn-secondary btn-lg ms-2">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

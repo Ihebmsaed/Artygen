@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collection details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f7f7f7;
+        }
+
+        .header-container {
+            text-align: center; /* Centre le contenu */
+            margin-top: 30px; /* Marge supérieure pour espacer du haut de la page */
+        }
+
+        h1 {
+            color: #333;
+            display: inline-block; /* Permet au titre de rester à côté du bouton */
+            margin-right: 15px; /* Espace entre le titre et le bouton */
+        }
+
+        .artwork-image {
+            width: 80%; /* Change la largeur à 80% pour rendre l'image plus petite */
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: block; /* Pour centrer l'image */
+            margin: 0 auto; /* Centrage de l'image */
+        }
+
+        .artwork-title {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .mb-4 {
+            margin-bottom: 1.5rem !important;
+        }
+
+        .delete-icon {
+            text-align: center;
+            margin-top: 10px;
+            cursor: pointer;
+            color: red;
+        }
+        
+        .btn-back {
+            font-size: 1rem; /* Taille du texte du bouton */
+            background-color: grey; /* Couleur de fond grise */
+            color: white; /* Couleur du texte en blanc */
+            text-decoration: none;
+            border-radius: 5px;
+            padding: 10px 20px; /* Augmentation de l'espacement */
+            position: absolute; /* Positionnement absolu */
+            right: 30px; /* Espace à droite */
+            top: 30px; /* Espace en haut */
+        }
+
+        .btn-back:hover {
+            background-color: darkgrey; /* Couleur au survol */
+            text-decoration: none;
+            color: white;
+        }
+
+        .btn-delete {
+            background-color: #d4af37; /* Couleur de fond jaune */
+            color: black; /* Couleur du texte en noir */
+        }
+
+        .btn-delete:hover {
+            background-color: #b68c2a; /* Couleur au survol */
+        }
+    </style>
+</head>
+<body>
+    {% include '../artwork/navbar.html' %}
+
+<div class="container">
+    <div class="header-container">
+        <h1>{{ gallery.name }}</h1>
+        <a href="{% url 'collection_list' %}" class="btn-back">Back to list</a> <!-- Bouton à droite -->
+    </div>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="row">
+        {% if gallery.artworks.all %}
+            {% for artwork in gallery.artworks.all %}
+                <div class="col-md-4 mb-4">
+                    <img src="{{ artwork.file.url }}" alt="{{ artwork.title }}" class="artwork-image" />
+                    <div class="artwork-title">{{ artwork.title }}</div>
+                    <div class="delete-icon">
+                        <form method="POST" action="{% url 'remove_artwork_from_gallery' gallery.id artwork.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-delete btn-sm">Delete</button> <!-- Changement ici -->
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No artworks in this collection.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Notifications pour succès ou erreur -->
+<div id="success-alert" style="display:none;" class="alert alert-success">Arwork deleted successfully</div>
+<div id="error-alert" style="display:none;" class="alert alert-danger">Erreur lors de la suppression</div>
+
+</body>
+</html>

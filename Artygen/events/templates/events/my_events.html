@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Events</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f7f7f7;
+            font-family: 'Arial', sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 30px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .d-flex.justify-content-between {
+            margin-bottom: 20px;
+        }
+
+        /* Button Styles */
+        .btn-success {
+            background-color: #d4af37;
+            border-color: #d4af37;
+        }
+
+        .btn-success:hover {
+            background-color: #b68c2a;
+            border-color: #b68c2a;
+        }
+
+        .card {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+        }
+
+        .card img {
+            border-radius: 10px 10px 0 0;
+            height: 200px;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .label {
+            font-weight: bold; /* Make the labels solid */
+            color: #333; /* Label color */
+        }
+
+        /* Golden line between image and information */
+        .golden-line {
+            border-top: 2px solid #d4af37; /* Golden line */
+        }
+
+        /* Adjust button styles for cards */
+        .btn-primary,
+        .btn-danger {
+            background-color: #d4af37;
+            border: none;
+            color: white;
+            margin: 5px; /* Add margin for spacing */
+            text-align: center; /* Center the text */
+            flex: 1; /* Allow buttons to grow equally */
+        }
+
+        .btn-primary:hover,
+        .btn-danger:hover {
+            background-color: #b68c2a;
+            color: white;
+        }
+
+        .button-container {
+            display: flex; /* Use flexbox for button alignment */
+            justify-content: center; /* Center the buttons */
+        }
+    </style>
+</head>
+<body>
+    {% include '../events/navbar.html' %}
+
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center my-4">
+            <h1>My Events</h1>
+            <a href="{% url 'event_create' %}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Create Event
+            </a>
+        </div>
+
+        <!-- Search Input -->
+        <div class="mb-4">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search events..." aria-label="Search events" oninput="filterEvents()">
+        </div>
+
+        {% if events %}
+            <div class="row" id="eventList">
+                {% for event in events %}
+                    <div class="col-md-4 event-card">
+                        <div class="card mb-4 shadow-sm">
+                            {% if event.image %}
+                                <img src="{{ event.image.url }}" class="card-img-top" alt="{{ event.title }}">
+                            {% else %}
+                                <img src="https://via.placeholder.com/350x200" class="card-img-top" alt="No Image Available">
+                            {% endif %}
+                            <div class="golden-line"></div> <!-- Golden line -->
+
+                            <div class="card-body">
+                                <h5 class="card-title label">Title: {{ event.title }}</h5> <!-- Title with label -->
+                                <p class="label">Date: {{ event.date|date:"F j, Y" }}</p> <!-- Displaying formatted date -->
+                                
+                                <div class="button-container"> <!-- Centering buttons -->
+                                    <a href="{% url 'event_detail' event.pk %}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-info-circle"></i> Details
+                                    </a> <!-- Details Button -->
+                                    <form action="{% url 'event_delete' event.pk %}" method="post" style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash-alt"></i> Delete
+                                        </button> <!-- Delete Button -->
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>You haven't created any events yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- Optional Font Awesome for icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <script>
+        function filterEvents() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const eventCards = document.querySelectorAll('.event-card');
+
+            eventCards.forEach(card => {
+                const title = card.querySelector('.card-title').textContent.toLowerCase();
+                const date = card.querySelector('.label').textContent.toLowerCase();
+
+                if (title.includes(input) || date.includes(input)) {
+                    card.style.display = ''; // Show card
+                } else {
+                    card.style.display = 'none'; // Hide card
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Feedback</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #444444;
+            font-family: Arial, sans-serif;
+        }
+
+        .card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: hsl(0, 0%, 58%); /* Dark gray background */
+        }
+
+        .card-title {
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        label {
+            color: #ffd700;
+        }
+
+        .form-control-static {
+            padding: 8px;
+            background-color: #444444;
+            border-radius: 4px;
+            color: #ffffff;
+        }
+
+        .btn-primary {
+            background-color: #ffd700; /* Doré */
+            border-color: #ffd700;
+            color: #333;
+        }
+
+        .btn-primary:hover {
+            background-color: #e6c200; /* Doré plus foncé */
+            border-color: #e6c200;
+        }
+
+        .btn-secondary {
+            background-color: #333; /* Gris moyen */
+            border-color: #808080;
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background-color: #666666; /* Gris plus foncé */
+            border-color: #666666;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Edit Feedback</h2>
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <!-- Utilisation d'une boucle pour ajouter les classes Bootstrap aux champs -->
+                        {% for field in form %}
+                        <div class="mb-3">
+                            <label class="form-label">{{ field.label }}</label>
+                            
+                            {% if forloop.first %}
+                                <!-- Afficher le premier champ comme texte non modifiable -->
+                                <p class="form-control-static">{{ field.value }}</p>
+                                <!-- Ajouter un champ caché pour envoyer la valeur avec le formulaire -->
+                                <input type="hidden" name="{{ field.name }}" value="{{ field.value }}">
+                            {% else %}
+                                {{ field }} <!-- Garder les champs modifiables pour les autres champs -->
+                            {% endif %}
+                            
+                            {% if field.errors %}
+                                <div class="text-danger">
+                                    {{ field.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <a href="{% url 'feedback:feedback_list' %}" class="btn btn-secondary ms-2">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

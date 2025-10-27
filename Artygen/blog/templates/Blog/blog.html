@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap for responsive layout -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <title>Inspiration - Blog d'Art</title>
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap for responsive layout -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    
+    <!-- Custom Forms CSS -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/custom-forms.css' %}">
+
+    <style>
+        /* Body styling */
+
+        .continue-reading {
+            font-weight: bold;
+            color: #d4af37 !important;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f8f8; /* Couleur de fond douce */
+            color: #333; /* Couleur du texte principale */
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            text-align: center;
+            color: #d4af37 ; /* Couleur rose pour le titre */
+            margin: 20px 0;
+            font-size: 3rem; /* Taille du titre */
+        }
+
+        .post-container {
+            max-width: 600px; /* Limite la largeur du post */
+            margin: 20px auto;
+            background-color: #ffffff; /* Couleur de fond du post */
+            padding: 15px;
+            position: relative; /* Position relative pour le conteneur */
+
+            border-radius: 12px; /* Coins arrondis */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombre légère */
+            transition: opacity 0.3s ease; /* Smooth transition for opacity changes */
+
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .user-photo {
+            width: 80px; /* Taille de la photo de l'utilisateur */
+            height: 80px;
+            border-radius: 50%; /* Rendre l'image ronde */
+            margin-right: 10px; /* Espacement à droite de l'image */
+            border: 2px solid #d4af37 ; /* Bordure pour l'image de profil */
+        }
+.user-photo-comt{  width: 40px; /* Taille de la photo de l'utilisateur */
+height: 40px;
+border-radius: 50%; /* Rendre l'image ronde */
+margin-right: 10px; /* Espacement à droite de l'image */
+border: 2px solid #d4af37 ; /* Bordure pour l'image de profil */}
+        .post-content {
+            margin: 10px 0; /* Espacement autour du contenu */
+        }
+
+        .post-title {
+            font-weight: bold; /* Met le titre en gras */
+            font-size: 1.5rem; /* Taille du titre */
+            margin-bottom: 5px; /* Espacement en dessous du titre */
+            color: #d4af37 ; /* Couleur du titre */
+        }
+
+        .date-posted {
+            font-size: 0.9rem; /* Taille de la date */
+            color: #a8a8a8; /* Couleur de la date */
+        }
+
+        .art-icon {
+            color: #f39c12; /* Couleur de l'icône d'art */
+            margin-right: 5px; /* Espacement à droite de l'icône */
+        }
+
+        /* Comment section styling */
+        .comment-section {
+            margin-top: 20px;
+        }
+        .comments-list::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8; /* Couleur du pouce lors du survol */
+        }
+    
+        .comments-list {
+            max-height: 200px; /* Hauteur maximale pour le défilement */
+            overflow-y: auto; /* Défilement vertical */
+            margin-bottom: 10px;
+            border: 1px solid #e0e0e0; /* Bordure autour de la section de commentaires */
+            border-radius: 5px; /* Coins arrondis */
+            padding: 10px; /* Espacement interne */
+            background-color: #f9f9f9; /* Couleur de fond des commentaires */
+        }
+        .comments-list::-webkit-scrollbar {
+            width: 8px; /* Largeur du scrollbar */
+        }
+        .comments-list::-webkit-scrollbar-thumb {
+            background: #d4af37 ; /* Couleur du pouce du scrollbar */
+            border-radius: 10px; /* Coins arrondis pour le pouce */
+        }
+        .comment {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #ffffff; /* Couleur de fond des commentaires */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombre légère */
+        }
+
+        .comment-input {
+            width: 100%; /* Remplir la largeur du conteneur */
+            padding: 20px; /* Espacement intérieur */
+            height:70px;
+            font-size: 16px; /* Taille de police pour la lisibilité */
+            border: 1px solid #ccc; /* Bordure claire */
+            border-radius: 20px; /* Coins arrondis */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Ombre légère */
+            transition: border-color 0.3s, box-shadow 0.3s; /* Transition douce */
+        }
+        
+        .comment-input:focus {
+            border-color: #007BFF; /* Changer la couleur de la bordure au focus */
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Ombre plus prononcée au focus */
+            outline: none; /* Enlever le contour par défaut */
+        }
+        
+        .comment-input::placeholder {
+            color: #aaa; /* Couleur du texte d'espace réservé */
+            font-style: italic; /* Italique pour le texte d'espace réservé */
+        }
+        .comment {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.comment .fa-trash {
+    position: absolute;
+    right: 10px; /* Ajustez la valeur pour l'espacement souhaité */
+}
+
+        
+        button {
+            padding: 10px 15px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%; /* Largeur complète pour le bouton */
+        }
+
+        button:hover {
+        }
+
+        .like-dislike-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Espace entre les éléments */
+            margin-top: 10px;
+        }
+
+        .like {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            color: #657786;
+        }
+
+        .like.liked {
+            color: #d4af37 ; /* Couleur pour le like */
+        }
+
+        .like:hover {
+            color: #d4af37 ; /* Couleur lors du survol */
+        }
+
+        .like .count {
+            margin-left: 5px;
+            font-weight: bold;
+        }
+        .comment-button {
+            padding: 10px 15px;
+            background-color: #d4af37 ; /* Couleur du bouton */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%; /* Largeur complète pour le bouton */
+            margin-top: 10px; /* Espacement au-dessus du bouton */
+        }
+    
+        .comment-button:hover {
+            background-color: #a8a8a8; /* Couleur lors du survol */}
+        .comment-icon {
+            font-size: 16px; /* Ajuste la taille de l'icône de commentaire */
+            color: #657786;
+            cursor: pointer; /* Change le curseur lors du survol */
+        }
+
+        /* Responsive media queries */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem; /* Réduit la taille du titre sur mobile */
+            }
+
+            .post-container {
+                padding: 10px; /* Réduit l'espacement interne sur mobile */
+            }
+
+        }
+        .modal-content {
+            background-color: #f8f9fa; /* Fond gris clair */
+            border-radius: 10px; /* Coins arrondis pour le modal */
+            padding: 20px; /* Espacement intérieur */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Ombre douce */
+            animation: fadeIn 0.3s; /* Animation d'apparition */
+
+        }
+        
+        .modal-header {
+            background-color: transparent; /* Couleur de fond personnalisée */
+            color: #fff; /* Couleur du texte */
+            display: flex; /* Utilisation de flexbox pour le titre et le bouton */
+            justify-content: space-between; /* Espace entre le titre et le bouton de fermeture */
+            align-items: center; /* Centrer verticalement */
+        }
+        
+        .modal-title {
+    font-family: 'Georgia', serif;
+    text-align: center;
+    color:black;
+            font-size: 2rem; /* Taille du texte */
+            flex-grow: 1; /* Permet au titre de prendre l'espace disponible */
+        }
+        
+        .close {
+            color: gold; /* Couleur dorée pour le bouton de fermeture */
+            float: right; /* Aligné à droite */
+            font-size: 28px; /* Taille du texte */
+            font-weight: bold; /* Gras */
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: #d4af37; /* Couleur dorée plus foncée au survol */
+    text-decoration: none; /* Pas de soulignement */
+    cursor: pointer; /* Curseur en main */
+        }
+        
+        
+        .form-group label {
+            font-weight: bold; /* Labels en gras */
+            margin-bottom: 0.5rem; /* Espace en dessous des labels */
+        }
+        
+        .form-control,
+        .form-control-file {
+            border-radius: 5px; /* Coins arrondis pour les champs de formulaire */
+            box-shadow: none; /* Enlever l'ombre par défaut */
+            transition: border-color 0.3s; /* Transition douce pour la bordure */
+        }
+        
+        .form-control:focus,
+        .form-control-file:focus {
+            border-color: #0056b3; /* Couleur de bordure au focus */
+            box-shadow: 0 0 5px rgba(0, 86, 179, 0.5); /* Ombre au focus */
+        }
+        
+        .btn {
+            background:none;
+            color: #000; /* Couleur du texte */
+            border: none; /* Supprime les bordures */
+        }
+        
+        .btn:hover {
+            opacity: 0.9; /* Effet au survol */
+        }
+        .text-center {
+            background-color: #f8f9fa; /* Couleur de fond gris clair */
+            padding: 20px; /* Espace intérieur */
+            border-radius: 10px; /* Coins arrondis */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Ombre pour un effet de profondeur */
+        }
+        
+        .btn-custom {
+            background-color:  ; /* Couleur du bouton personnalisé */
+            border-color: #d4af37 ; /* Couleur de la bordure */
+            color: 808080; /* Couleur du texte */
+        }
+        
+        .btn-custom:hover {
+            background-color: #d4af37 ; /* Couleur au survol */
+            border-color: #d4af37 ; /* Couleur de la bordure au survol (plus sombre) */
+        
+        color:#fff;}
+        
+        .btn-custom-secondary {
+            background-color: none ; /* Couleur du bouton secondaire personnalisé */
+            border-color: #6c757d; /* Couleur de la bordure */
+            color: 808080; /* Couleur du texte */
+        }
+        
+        .btn-custom-secondary:hover {
+            background-color: #d4af37 ; /* Couleur au survol */
+            border-color: #4e555b; /* Couleur de la bordure au survol (plus sombre) */
+      color:#fff;  }
+
+      .comment {
+        transition: opacity 0.3s ease-out; /* Ajouter une transition */
+    }
+    
+    .comment.hidden {
+        opacity: 0; /* Rendre le commentaire transparent */
+        height: 0; /* Réduire la hauteur pour cacher complètement */
+        overflow: hidden; /* Éviter de montrer du contenu */
+    }
+    
+    /* Style pour l'image du post */
+.post-thumbnail {
+    display: flex;
+    justify-content: center; /* Centre l'image horizontalement */
+    margin-bottom: 15px;
+    overflow: hidden; /* Permet de couper l'image si elle dépasse la taille */
+}
+
+.post-thumbnail__image {
+    width: 250px; /* Largeur optimisée pour un affichage compact */
+    height: 200px; /* Hauteur optimisée pour garder l'image carrée */
+    object-fit: cover; /* Garde le ratio de l'image et remplit le conteneur */
+    border-radius: 10px; /* Coins arrondis */
+}
+
+#suggestions {
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+    position: absolute; /* Si vous souhaitez un affichage en overlay */
+}
+
+.generated-content {
+    max-height: 200px;
+    overflow-y: auto;
+}
+.suggestion-item {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    margin-top: 8px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    position: relative;
+}
+.copy-button {
+    margin-left: auto;
+    cursor: pointer;
+    color: #007bff;
+    font-size: 1.2em;
+}
+.copy-button:hover {
+    color: #0056b3;
+}
+{% comment %} .search-bar {
+    width: 600px;
+    padding: 10px;
+    margin: 20px auto;
+    font-size: 1.2rem;
+    border: 2px solid #d4af37;
+    border-radius: 20px;
+    box-sizing: border-box;
+    font-family: 'Playfair Display', serif;
+
+    display: block; /* Ensures the element behaves like a block element */
+    text-align: center; /* Centers the text inside the search bar */
+} {% endcomment %}
+
+
+.search-container {
+    position: relative; /* Allows positioning of the icon */
+    width: 600px;
+    margin: 20px auto;
+}
+
+.search-bar {
+    font-family: 'Playfair Display', serif;
+
+    width: 100%; /* Adjust width to fill the container */
+    padding: 10px 40px 10px 10px; /* Add padding to the right for the icon */
+    font-size: 1.2rem;
+    border: 2px solid #d4af37;
+    border-radius: 20px;
+    box-sizing: border-box;
+    text-align: center; /* Centers the text inside the search bar */
+}
+
+.search-icon {
+    position: absolute; /* Position the icon inside the container */
+    right: 10px; /* Position from the right */
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%); /* Adjust for the icon height */
+    color: #d4af37; /* Icon color */
+    font-size: 1.2rem; /* Icon size */
+}
+
+
+.suggestion-item:hover {
+    background-color: #f0f0f0;
+}{% comment %} 
+#generated-content .suggestion-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+#generated-content .suggestion-item button {
+    color: #007bff;
+    text-decoration: none;
+}
+#generated-content .suggestion-item button:hover {
+    text-decoration: underline;
+} {% endcomment %}
+.modal-favouri {
+    display: none; /* Masquer par défaut */
+    position: fixed; /* Reste en place */
+    z-index: 1000; /* Au-dessus de tout autre contenu */
+    left: 0;
+    top: 0;
+    width: 100%; /* Largeur complète */
+    height: 100%; /* Hauteur complète */
+    overflow: auto; /* Ajouter une barre de défilement si nécessaire */
+    background-color: rgba(0, 0, 0, 0.8); /* Fond noir transparent */
+    justify-content: center; /* Centrer le contenu */
+    align-items: center; /* Centrer verticalement */
+}
+
+.modal-favouri-content {
+    background-color: #f8f9fa; /* Fond gris clair */
+    border-radius: 10px; /* Coins arrondis */
+    padding: 20px; /* Espacement intérieur */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Ombre douce */
+    width: 90%; /* Largeur du modal */
+    max-width: 500px; /* Largeur maximale */
+    animation: fadeIn 0.3s; /* Animation d'apparition */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.close-favouri {
+    color: #d4af37; /* Couleur dorée pour le bouton de fermeture */
+    float: right; /* Aligné à droite */
+    font-size: 28px; /* Taille du texte */
+    font-weight: bold; /* Gras */
+}
+
+.close-favouri:hover,
+.close-favouri:focus {
+    color: gold; /* Couleur dorée plus foncée au survol */
+    text-decoration: none; /* Pas de soulignement */
+    cursor: pointer; /* Curseur en main */
+}
+
+h2 {
+    margin: 0 0 15px; /* Marges pour le titre */
+    color: #333; /* Couleur du texte */
+    font-family: 'Georgia', serif; /* Police artistique */
+    text-align: center; /* Centre le titre */
+}
+
+.label-fav,
+.priority-fav {
+    font-weight: bold; /* Gras pour les étiquettes */
+    margin-bottom: 5px; /* Marge inférieure */
+    display: block; /* Afficher en bloc */
+    color: #333; /* Couleur du texte */
+}
+
+.textarea-fav {
+    width: 100%; /* Largeur complète */
+    padding: 10px; /* Espacement intérieur */
+    border-radius: 5px; /* Coins arrondis */
+    border: 1px solid #ccc; /* Bordure grise */
+    margin-bottom: 15px; /* Marge inférieure */
+    resize: vertical; /* Permettre le redimensionnement vertical */
+    font-family: 'Arial', sans-serif; /* Police claire */
+}
+
+.priority-fav-select {
+    width: 100%; /* Largeur complète */
+    padding: 10px; /* Espacement intérieur */
+    border-radius: 5px; /* Coins arrondis */
+    border: 1px solid #ccc; /* Bordure grise */
+    margin-bottom: 15px; /* Marge inférieure */
+    background-color: #f9f9f9; /* Fond gris très clair */
+    color: #333; /* Couleur du texte */
+    font-family: 'Arial', sans-serif; /* Police claire */
+}
+
+.button-fav {
+    background-color: gold; /* Couleur du bouton doré */
+    color: #fff; /* Couleur du texte */
+    padding: 10px 20px; /* Espacement intérieur */
+    border: none; /* Pas de bordure */
+    border-radius: 5px; /* Coins arrondis */
+    cursor: pointer; /* Curseur en main */
+    transition: background-color 0.3s; /* Transition pour l'effet de survol */
+    font-family: 'Arial', sans-serif; /* Police claire */
+}
+
+.button-fav:hover {
+    background-color: #d4af37; /* Couleur dorée plus foncée au survol */
+}
+
+
+.save-icon {
+    color: gold; /* Couleur dorée de l'icône */
+    font-size: 24px; /* Taille de l'icône */
+    cursor: pointer; /* Curseur en main au survol */
+    transition: color 0.3s; /* Transition pour le changement de couleur */
+    position: absolute; /* Positionner l'icône */
+    top: 10px; /* Distance du haut */
+    right: 10px; /* Distance de la droite */
+}
+
+.save-icon:hover {
+    color: #d4af37; /* Couleur dorée plus foncée au survol */
+}
+
+
+    </style>
+   
+
+</head>
+
+<body>
+    
+    {% include '../Blog/navbar.html' %}
+<h1>Inspiration - Art Blog</h1>
+    <!-- Button to trigger the modal -->
+    <!-- Assurez-vous d'inclure Font Awesome dans votre projet -->
+
+    <div class="d-flex justify-content-center mb-4" style=" padding: 20px; border-radius: 10px;">
+        <button type="button" class="btn btn-custom me-2" data-toggle="modal" data-target="#newPostModal">
+            <i class="fas fa-plus"></i> Create a New Post
+        </button>
+        <button type="button" class="btn btn-custom-secondary" onclick="window.location.href='{% url 'user-posts' %}'">
+            <i class="fas fa-blog"></i> My Blog
+        </button>
+        <button type="button" class="btn btn-custom-secondary" onclick="window.location.href='{% url 'favourites' %}'">
+            <i class="fas fa-save "></i> My Saved Content
+
+        </button>
+    </div>
+    <div class="search-container">
+        <input type="text" class="search-bar" id="searchBar" placeholder="Search" onkeyup="filterPosts()">
+        <i class="fa fa-search search-icon"></i> <!-- Font Awesome loop icon -->
+    </div>
+    
+    
+
+    <!-- Blog Post Loop -->
+    <div class="container">
+        {% for post in posts %}
+        <div class="post-container">
+
+            <i class="fas fa-save save-icon" onclick="openSaveModal({{ post.id }})" aria-hidden="true"></i>
+
+
+            <div class="post-header">
+                {% if post.author.profile.photo %}
+                    <img src="{{ post.author.profile.photo.url }}" alt="{{ post.author.username }}" class="user-photo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="user-photo" style="display: none; background: linear-gradient(135deg, #d4af37, #b38e2c); align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 24px;">
+                        {{ post.author.username|slice:":1"|upper }}
+                    </div>
+                {% else %}
+                    <div class="user-photo" style="background: linear-gradient(135deg, #d4af37, #b38e2c); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 24px;">
+                        {{ post.author.username|slice:":1"|upper }}
+                    </div>
+                {% endif %}
+                <div>
+                    <h5 class="mb-0">{{ post.author }}</h5>
+                    <p class="date-posted">{{ post.date_posted|date:"d M Y" }}</p>
+                </div>
+            </div>
+           
+
+            <div class="post-content">
+                <p class="post-title">{{ post.title }}</p> <!-- Titre du post -->
+                <p><i class="fas fa-paint-brush art-icon"></i> <!-- Icône d'art et contenu -->
+                {{ post.content|truncatewords:90 }} <!-- Show first 50 words -->
+                {% if post.content|length > 90 %}
+                    <span class="continue-reading" onclick="location.href='{% url 'post-detail-blog' post.pk %}'">
+                        Continue reading</span>
+                {% endif %}</p>
+            </div>
+            <div class="post-thumbnail">
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}" class="post-thumbnail__image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div class="no-image-placeholder" style="display: none; background: linear-gradient(135deg, #f0f0f0, #e0e0e0); padding: 60px; text-align: center; border-radius: 12px;">
+                        <i class="fas fa-image" style="font-size: 3rem; color: #999;"></i>
+                        <p style="color: #666; margin-top: 10px;">Image indisponible</p>
+                    </div>
+                {% else %}
+                    <div class="no-image-placeholder" style="background: linear-gradient(135deg, #f0f0f0, #e0e0e0); padding: 60px; text-align: center; border-radius: 12px;">
+                        <i class="fas fa-image" style="font-size: 3rem; color: #999;"></i>
+                        <p style="color: #666; margin-top: 10px;">Pas d'image</p>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="like-dislike-section">
+                <div class="like {% if request.user in post.liked_by.all %}liked{% endif %}" onclick="likePost({{ post.id }})">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span class="count" id="like-count-{{ post.id }}">{{ post.likes_count }}</span>
+                </div>
+               
+                <div class="comment-icon" onclick="toggleComments({{ post.id }})">
+                    <i class="fas fa-comment"></i>
+                </div>
+            </div>
+<!-- modal favouri-->
+<div id="modal-favouri" class="modal-favouri">
+    <div class="modal-favouri-content">
+        <span class="close-favouri" onclick="closeSaveModal()">&times;</span>
+        <h2>Mark as Favorite</h2>
+        <form id="saveForm">
+            <label class="label-fav" for="note">Add note :</label>
+            <textarea name="note" class="textarea-fav" id="note" rows="3"></textarea>
+
+            <label class="priority-fav" for="priority">Chose Priority:</label>
+            <select class="priority-fav-select" name="priority" id="priority">
+                <option value="High">High</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="Low">Low</option>
+            </select>
+
+            <button class="button-fav" type="button" onclick="submitSaveForm({{ post.id }})">Save</button>
+        </form>
+    </div>
+</div>
+
+            
+
+            <!-- Comment Section -->
+            <div class="comment-section">
+                <div id="comments-list-{{ post.id }}" class="comments-list" style="display: none;">
+                    {% for comment in post.comments.all %}
+                    <div class="comment" data-comment-id="{{ comment.id }}">
+                        {% if comment.author_profile_photo %}
+                            <img src="/profile_photos/{{ comment.author_profile_photo }}" alt="{{ comment.author.username }}" class="user-photo-comt">
+                        {% else %}
+                            <div class="user-photo-comt" style="background: linear-gradient(135deg, #4a90e2, #357abd); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px;">
+                                {{ comment.author.username|slice:":1"|upper }}
+                            </div>
+                        {% endif %}
+                        <strong>{{ comment.author.username }}</strong>: {{ comment.content }}
+                        {% if comment.author.id == user.id %}
+                        <i class="fas fa-trash" style="color: red; cursor: pointer;" onclick="deleteComment({{ comment.id }}, {{ post.id }})" title="Supprimer le commentaire"></i>
+                        {% endif %}
+                    </div>
+                    
+                    {% empty %}
+                    <div class="comment">No comments yet.</div>
+                    {% endfor %} 
+                </div>         
+                <textarea id="comment-input-{{ post.id }}" class="comment-input" placeholder="Write a comment..."></textarea>
+                <button class="comment-button" onclick="addComment({{ post.id }})">Add a comment</button>
+            </div>
+            
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="modal fade custom-modal" id="newPostModal" tabindex="-1" aria-labelledby="newPostModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content shadow-lg">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newPostModalLabel">
+                        <i class="fas fa-pen"></i> Create Post
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white; opacity: 1;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'post-Create' %}" method="post" enctype="multipart/form-data" data-validate="true" onsubmit="handleFormSubmit(event, this)">
+                        {% csrf_token %}
+                        <div class="custom-form-group">
+                            <label for="post-title" class="custom-form-label">
+                                <i class="fas fa-heading"></i> Title <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-control custom-form-control" id="post-title" name="title" placeholder="Enter post title" required minlength="3">
+                        </div>
+                        <div class="custom-form-group position-relative">
+                            <label for="post-content" class="custom-form-label">
+                                <i class="fas fa-align-left"></i> Content <span class="required">*</span>
+                            </label>
+                            <textarea class="form-control custom-form-control auto-resize" id="post-content" name="content" rows="6" placeholder="Write your post content..." required minlength="10"></textarea>
+                            <span id="generate-text" class="magic-wand-icon fas fa-magic" title="Générer du texte avec IA"></span>
+                        </div>
+                        <div id="loader" class="loader" style="display: none;"></div>
+                        <div id="generated-content" class="generated-content mt-3 p-3 border rounded" style="display: none; background-color: #f8f9fa;"></div>
+                        <div class="custom-form-group">
+                            <label for="image" class="custom-form-label">
+                                <i class="fas fa-image"></i> Image
+                            </label>
+                            <input type="file" class="form-control custom-form-control" name="image" accept="image/*">
+                            <small class="form-text text-muted">Optional: Add an image to your post</small>
+                        </div>
+                        <div class="modal-footer border-top-0">
+                            <button type="button" class="btn btn-custom-secondary" data-dismiss="modal">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                            <button type="submit" class="btn btn-custom-primary">
+                                <i class="fas fa-paper-plane"></i> Create the post
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <!-- CSS pour la baguette magique, le loader, et l'icône de copie -->
+    <style>
+        .magic-wand-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 1.2em;
+            color: #d4af37;
+        }
+
+        .magic-wand-icon:hover {
+            color:gold;
+        }    
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 4px solid #007bff;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    
+        .copy-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+    </style>
+    
+    <!-- JavaScript pour générer du texte et afficher le loader -->
+    <script>
+        let currentPostId = null; // Variable to store the current post ID
+
+        
+        function openSaveModal(postId) {
+            currentPostId = postId; // Set the current post ID
+            const modal = document.getElementById('modal-favouri');
+            modal.style.display = 'flex'; // Use flex to maintain centered alignment
+        }
+        
+        function closeSaveModal() {
+            const modal = document.getElementById('modal-favouri');
+            modal.style.display = 'none';
+            //document.getElementById('modal-favouri').style.display = 'none';
+            document.getElementById('saveForm').reset(); // Reset form fields after closing
+
+        }
+        function closeSaveModal2() {
+            $('#newPostModal').modal('hide'); // Hides the modal using jQuery
+        }
+        
+        
+        function submitSaveForm() {
+            const note = document.getElementById('note').value;
+            const priority = document.getElementById('priority').value;
+        
+            fetch(`/blog/save_to_favourites/${currentPostId}/`, { // Use currentPostId
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ note: note, priority: priority })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.message) {
+                    alert(data.message);
+                } else if (data.error) {
+                    alert(`Erreur: ${data.error}`);
+                }
+                closeSaveModal(); // Close the modal
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert("Une erreur est survenue. Veuillez réessayer plus tard.");
+            });
+        }
+
+        
+        function filterPosts() {
+            const searchValue = document.getElementById('searchBar').value.toLowerCase();
+            const posts = document.querySelectorAll('.post-container');
+        
+            posts.forEach(post => {
+                const title = post.querySelector('.post-title').textContent.toLowerCase();
+                
+                if (title.includes(searchValue)) {
+                    post.style.height = 'auto'; // Show the post by allowing it to take its normal height
+                    post.style.visibility = 'visible'; // Ensure it's visible
+                } else {
+                    post.style.height = '0'; // Hide the post by collapsing its height
+                    post.style.visibility = 'hidden'; // Keep it hidden
+                }
+            });
+        }
+        
+        
+        
+        
+        
+        document.getElementById('generate-text').onclick = function() {
+            const content = document.getElementById('post-content').value;
+            const generatedContentDiv = document.getElementById('generated-content');
+            const loader = document.getElementById('loader');
+    
+            // Afficher le loader et masquer la div de contenu généré
+            loader.style.display = 'block';
+            generatedContentDiv.style.display = 'none';
+    
+            fetch("{% url 'generate-text' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+                body: JSON.stringify({ content: content })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Cacher le loader
+                loader.style.display = 'none';
+                generatedContentDiv.innerHTML = ''; // Effacer le contenu précédent
+    
+                if (typeof data.generated_text === "string") {
+                    const cleanedText = data.generated_text.replace(/µ|\*/g, ""); // Nettoyer le texte
+    
+                    // Créer un élément pour afficher le texte généré
+                    const suggestionItem = document.createElement('div');
+                    suggestionItem.className = 'suggestion-item position-relative';
+                    suggestionItem.style.padding = '10px';
+                    suggestionItem.style.border = '1px solid #ddd';
+                    suggestionItem.style.borderRadius = '5px';
+    
+                    const textNode = document.createElement('span');
+                    textNode.innerText = cleanedText;
+    
+                    // Bouton de copie en haut à droite du texte généré
+                    const copyButton = document.createElement('span');
+                    copyButton.className = 'copy-button fas fa-copy';
+                    copyButton.onclick = () => {
+                        navigator.clipboard.writeText(cleanedText);
+                        copyButton.innerHTML = '<i class="fas fa-check"></i>';
+                        setTimeout(() => { copyButton.innerHTML = '<i class="fas fa-copy"></i>'; }, 2000);
+                    };
+    
+                    suggestionItem.appendChild(textNode);
+                    suggestionItem.appendChild(copyButton);
+                    generatedContentDiv.appendChild(suggestionItem);
+    
+                    // Afficher la div de contenu généré
+                    generatedContentDiv.style.display = 'block';
+                } else if (data.error) {
+                    generatedContentDiv.style.display = 'block';
+                    generatedContentDiv.innerText = data.error;
+                }
+            })
+            .catch(error => {
+                loader.style.display = 'none';
+                console.error('Error:', error);
+            });
+        };
+  
+    
+        
+        
+        function deleteComment(commentId, postId) {
+            const csrfTokenElement = document.querySelector('meta[name="csrf-token"]');
+            const csrftoken = csrfTokenElement ? csrfTokenElement.getAttribute('content') : '';
+        
+            fetch(`/blog/comment/${commentId}/delete/`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Error deleting comment');
+                
+                const commentElement = document.querySelector(`.comment[data-comment-id="${commentId}"]`);
+                if (commentElement) {
+                    commentElement.classList.add('hidden'); // Ajouter la classe cachée
+                    setTimeout(() => {
+                        commentElement.remove(); // Retirer le commentaire du DOM après l'animation
+                    }, 300); // Correspond à la durée de la transition
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+        
+        
+        function likePost(postId) {
+            fetch(`/blog/like_post/${postId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById(`like-count-${postId}`).innerText = data.likes_count;
+                // Toggle the like class to change color
+                const likeElement = document.querySelector(`.like[onclick="likePost(${postId})"]`);
+                likeElement.classList.toggle('liked');
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function addComment(postId) {
+            const commentInput = document.getElementById(`comment-input-${postId}`);
+            const content = commentInput.value.trim();
+
+            if (!content) {
+                alert("Le commentaire ne peut pas être vide.");
+                return;
+            }
+
+            const csrfTokenElement = document.querySelector('meta[name="csrf-token"]');
+            const csrftoken = csrfTokenElement ? csrfTokenElement.getAttribute('content') : '';
+
+            fetch(`/blog/post/${postId}/comment/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ content: content })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Error adding comment');
+                return response.json();
+            })
+            .then(data => {
+                const commentsList = document.getElementById(`comments-list-${postId}`);
+                const newComment = document.createElement('div');
+                newComment.className = 'comment';
+                newComment.innerHTML = `<strong>${data.author}</strong>: ${data.comment}`;
+                commentsList.appendChild(newComment);
+                commentsList.scrollTop = commentsList.scrollHeight; // Scroll to the bottom
+                commentInput.value = ''; // Clear the input field
+                if (commentsList.style.display === 'none') {
+                    commentsList.style.display = 'block';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function toggleComments(postId) {
+            const commentsList = document.getElementById(`comments-list-${postId}`);
+            commentsList.style.display = commentsList.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        // Handle form submission
+        function handleFormSubmit(event, form) {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.classList.add('btn-loading');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+        }
+        
+        // Auto-resize textarea
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.auto-resize').forEach(textarea => {
+                textarea.addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = this.scrollHeight + 'px';
+                });
+            });
+        });
+    </script>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/modal-handler.js' %}"></script>
+    
+    <!-- Messages Django pour toasts -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="django-message" data-type="{% if 'success' in message.tags %}success{% elif 'error' in message.tags %}error{% elif 'warning' in message.tags %}warning{% else %}info{% endif %}" style="display: none;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

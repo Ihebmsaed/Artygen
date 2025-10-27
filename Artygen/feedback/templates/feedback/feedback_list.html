@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+          body { 
+            font-family: 'Arial', sans-serif; 
+            background-color: #444444; 
+            margin: 0; 
+            padding: 20px; 
+        }
+        .container { 
+            background-color:hsl(0, 0%, 58%);   
+            border-radius: 8px; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+            padding: 20px; 
+            max-width: 800px; 
+            margin: auto; 
+        }
+        h1 { 
+            text-align: center; 
+            color: #333; 
+        }
+        .feedback-item { 
+            border-bottom: 1px solid #d3d3d3; /* Gris clair pour la séparation */
+            padding: 10px 0; 
+            position: relative; 
+        }
+        .feedback-item:last-child { 
+            border-bottom: none; 
+        }
+        .rating { 
+            color: #ffd700; /* Couleur dorée pour la note */
+        }
+        .action-buttons a {
+            color: #ffd700; 
+            margin-right: 10px; 
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .action-buttons a:hover {
+            color: #7d7e58;
+        }
+        .badge-container { 
+            margin-top: 20px; 
+            text-align: center; 
+        }
+        .badge { 
+            display: inline-block; 
+            padding: 10px; 
+            margin: 5px; 
+            border-radius: 5px; 
+            background-color: #ffd700; /* Doré pour les badges */
+            color: #333; 
+            font-weight: bold; 
+        }
+        .text-center a.btn-primary, .text-center a.btn-success {
+            color: white;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 10px;
+            display: inline-block;
+        }
+        .search-container {
+    margin-bottom: 20px;
+    text-align: center;
+}
+.search-input {
+    padding: 10px;
+    width: 80%;
+    max-width: 400px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+        .text-center .btn-primary {
+            background-color: #007bff; /* Couleur primaire pour les boutons */
+        }
+        .text-center .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .text-center .btn-success {
+            background-color: #28a745; /* Couleur verte pour le bouton Ajouter un feedback */
+        }
+        .text-center .btn-success:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    {% include '../feedback/navbar.html' %}
+
+    <div class="container">
+        <div class="badge-container">
+            <h2><i class="fas fa-trophy"></i> Your Badge</h2>
+            {% if user_badges %}
+                {% for user_badge in user_badges %}
+                    <span class="badge">
+                        {% if user_badge.badge.name == "Rookie" %}
+                            <i class="fas fa-star"></i>
+                        {% elif user_badge.badge.name == "Explorer" %}
+                            <i class="fas fa-compass"></i>
+                        {% elif user_badge.badge.name == "Master" %}
+                            <i class="fas fa-crown"></i>
+                        {% else %}
+                            <i class="fas fa-award"></i>
+                        {% endif %}
+                        {{ user_badge.badge.name }}
+                    </span>
+                {% endfor %}
+            {% else %}
+                <p>You have not earned any badges yet.</p>
+            {% endif %}
+        </div>
+
+        <div class="text-center mt-3">
+            <a href="{% url 'feedback:user_badges' %}" class="btn btn-primary">
+                <i class="fas fa-eye"></i> View Badges
+            </a>
+            <a href="{% url 'feedback:submit_feedback' %}" class="btn btn-success ml-2">
+                <i class="fas fa-plus"></i> Add Feedback
+            </a>
+        </div>
+        <h1><i class="fas fa-comments"></i> Feedback List</h1>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search by title, comment, or rating..." onkeyup="filterFeedback()">
+        </div>
+
+        {% if feedbacks %}
+            <div id="feedbackList">
+                {% for feedback in feedbacks %}
+                    <div class="feedback-item" data-title="{{ feedback.artwork_title|lower }}" data-comment="{{ feedback.comment|lower }}" data-rating="{{ feedback.rating }}">
+                        <strong>{{ feedback.artwork_title }}</strong>
+                        <strong>{{ feedback.user.username }}</strong> rated <span class="rating">{{ feedback.rating }} ⭐</span>
+                        <p>{{ feedback.comment }}</p>
+                        <small>Created at: {{ feedback.created_at }}</small>
+                        
+                        <div class="action-buttons">
+                            <a href="{% url 'feedback:feedback_update' feedback.id %}">
+                                <i class="fas fa-edit"></i> Update
+                            </a>
+                            <a href="{% url 'feedback:feedback_delete' feedback.id %}">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No feedbacks available.</p>
+        {% endif %}
+        
+      
+    </div>
+
+    <script>
+        function filterFeedback() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const feedbackItems = document.querySelectorAll('.feedback-item');
+            
+            feedbackItems.forEach(item => {
+                const title = item.getAttribute('data-title');
+                const comment = item.getAttribute('data-comment');
+                const rating = item.getAttribute('data-rating');
+
+                // Check if title, comment, or rating contains the search input
+                if (title.includes(searchInput) || comment.includes(searchInput) || rating.includes(searchInput)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Update</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eaeaea; /* Light gray background */
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #5c5c5c; /* Darker gray for the title */
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #ffffff; /* White background for the form */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #5c5c5c; /* Dark gray for labels */
+        }
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc; /* Light gray border */
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        input[type="text"]:focus,
+        textarea:focus {
+            border-color: #FFC700; /* Gold border on focus */
+            outline: none;
+        }
+        button {
+            background-color: #FFC700; /* Gold background */
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #e6b800; /* Darker gold on hover */
+        }
+        .cancel-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            text-decoration: none;
+            color: #5c5c5c; /* Dark gray for the cancel link */
+            font-size: 16px;
+        }
+        .cancel-link:hover {
+            text-decoration: underline;
+            color: #FFC700; /* Gold on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Post update</h1>
+        <form method="POST">
+            {% csrf_token %}
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" value="{{ post.title }}" required>
+            
+            <label for="content">Content:</label>
+            <textarea id="content" name="content" required>{{ post.content }}</textarea>
+            
+            <button type="submit">Update</button>
+        </form>
+        <a href="{% url 'user-posts' %}" class="cancel-link">Cancel</a>  <!-- Lien vers la liste des posts -->
+    </div>
+</body>
+</html>

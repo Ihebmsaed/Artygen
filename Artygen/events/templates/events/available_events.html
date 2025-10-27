@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Events</title>
+</head>
+<body>
+    {% include '../events/navbar.html' %}
+
+    <h2>Available Events</h2>
+    <ul>
+        {% for event in events %}
+            <li>
+                <h3>{{ event.title }}</h3>
+                <p>{{ event.description }}</p>
+                <p>Location: {{ event.location }}</p>
+                <p>Date: {{ event.date }}</p>
+                <p>Capacity: {{ event.capacity }}</p>
+                <p>Type: {{ event.type }}</p>
+                <a href="{% url 'event_participate' event.pk %}">Participate</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'event_list' %}">Back to Event List</a>
+</body>
+</html>

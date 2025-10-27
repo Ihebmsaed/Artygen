@@ -1,0 +1,32 @@
+{% load static %}  <!-- Load the static template tag -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Gallery{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'website/css/style.css' %}"> <!-- Link to your CSS file -->
+</head>
+<body>
+    <header>
+        <h1>Gallery</h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'gallery_list' %}">Gallery List</a></li>
+                <li><a href="{% url 'gallery_create' %}">Create Gallery</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        <!-- Content from child templates will go here -->
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; {{ current_year }} Your Company Name</p>
+    </footer>
+</body>
+</html>

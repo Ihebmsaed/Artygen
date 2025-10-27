@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Artwork With AI</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f7f7f7; /* Fond gris clair */
+        }
+
+        .card {
+            max-width: 600px;
+            margin: auto;
+            margin-top: 50px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0; /* Légère bordure gris clair */
+        }
+
+        h1 {
+            color: #333; /* Couleur du titre en gris foncé */
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Champs de formulaire */
+        .form-control {
+            background-color: #f8f8f8; /* Fond gris clair pour les champs */
+            border: 1px solid #d4d4d4; /* Bordure grise */
+            border-radius: 5px;
+        }
+
+        .form-control:focus {
+            border-color: #d4af37; /* Bordure or au focus */
+            box-shadow: 0 0 5px rgba(212, 175, 55, 0.5); /* Ombre dorée */
+        }
+
+        /* Bouton principal */
+        .btn-primary {
+            background-color: #d4af37; /* Or */
+            border-color: #d4af37;
+        }
+
+        .btn-primary:hover {
+            background-color: #b68c2a; /* Or plus foncé au survol */
+            border-color: #b68c2a;
+        }
+
+        .error {
+            color: #ff5252; /* Rouge d'erreur */
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .result {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Progress bar styles */
+        .progress {
+            width: 100%;
+            background-color: #444;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 20px;
+            width: 0%;
+            background-color: #d4af37;
+            border-radius: 8px;
+            transition: width 0.4s;
+        }
+
+        /* Styles pour le bouton de retour */
+        .btn-custom {
+            margin-top: 20px; /* Espacement au-dessus du bouton */
+            background-color: #6c757d; /* Gris pour le bouton retour */
+            border-color: #6c757d;
+            color: white; /* Couleur du texte */
+            padding: 10px 20px; /* Espacement intérieur */
+            border-radius: 5px; /* Coins arrondis */
+            text-align: center; /* Centrer le texte */
+            display: block; /* Affichage en bloc pour remplir la largeur */
+            text-decoration: none; /* Pas de soulignement */
+            transition: background-color 0.3s; /* Transition pour le survol */
+        }
+
+        .btn-custom:hover {
+            background-color: #6c757d; /* Gris pour le bouton retour */
+            border-color: #6c757d;
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    {% include './navbar.html' %}
+
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <h1>Generate Artwork With AI</h1>
+                <form method="post" onsubmit="showProgressBar()">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="prompt">Enter your prompt :</label>
+                        <input type="text" id="prompt" name="prompt" required placeholder="e.g., Une ville futuriste" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="style">Select a style :</label>
+                        <select id="style" name="style" required class="form-control">
+                            <option value="réaliste">Réaliste</option>
+                            <option value="dessin animé">Dessins Animés</option>
+                            <option value="croquis">Croquis</option>
+                            <option value="abstrait">Abstrait</option>
+                            <option value="art numérique">Art Numérique</option>
+                            <option value="peinture à l'huile">Peinture à l'Huile</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Generate</button>
+                    <a href="http://127.0.0.1:8000/artwork/" class="btn-custom btn-block">Back</a> <!-- Bouton avec largeur identique -->
+
+                </form>
+
+                <!-- Progress bar -->
+                <div class="progress" id="progress">
+                    <div class="progress-bar"></div>
+                </div>
+
+                {% if error %}
+                    <p class="error">Erreur : {{ error }}</p>
+                {% elif image_data %}
+                    <div class="result">
+                        <h2>Generated Arwork</h2>
+                        <img src="data:image/png;base64,{{ image_data }}" alt="Image Générée" />
+                        <p><strong>Prompt :</strong> {{ prompt }}</p>
+                        <p><strong>Style :</strong> {{ style }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showProgressBar() {
+            const progressBarContainer = document.getElementById('progress');
+            const progressBar = document.querySelector('.progress-bar');
+            progressBarContainer.style.display = 'block';
+            let width = 0;
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                } else {
+                    width++;
+                    progressBar.style.width = width + '%';
+                }
+            }, 30);
+        }
+    </script>
+</body>
+
+</html>

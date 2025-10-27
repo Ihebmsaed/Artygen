@@ -1,0 +1,146 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Galleries</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Base Styling */
+        body {
+            background-color: #f4f5f7;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+        .container {
+            max-width: 950px;
+            margin-top: 60px;
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+        /* Header */
+        .page-header {
+            text-align: center;
+            color: #d4af37;
+            font-size: 2em;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        /* Button Styling */
+        .btn-outline-primary, .btn-primary {
+            color: #d4af37;
+            border-color: #d4af37;
+            transition: all 0.3s ease;
+        }
+        .btn-outline-primary:hover, .btn-primary:hover {
+            background-color: #d4af37;
+            color: #fff;
+        }
+        .btn-primary {
+            color: #fff;
+            background-color: #d4af37;
+            border: none;
+        }
+        /* Gallery Cards */
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .card img {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            height: 200px;
+            object-fit: cover;
+        }
+        .card-body {
+            padding: 15px;
+            text-align: center;
+        }
+        .card-title {
+            font-size: 1.2em;
+            color: #d4af37;
+            font-weight: 600;
+        }
+        .card-text {
+            font-size: 1em;
+            color: #666;
+        }
+        .footer {
+            text-align: center;
+            font-size: 0.85em;
+            margin: 20px 0;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    {% include '../gallery/navbar.html' %}
+
+<div class="container">
+    <!-- Page Header -->
+    <h2 class="page-header">My Galleries</h2>
+
+    <!-- Button to See All Galleries -->
+    <div class="text-center mb-4">
+        <a href="{% url 'gallery_list' %}" class="btn btn-outline-primary">
+            <i class="fas fa-th-list"></i> See Existing Galleries
+        </a>
+    </div>
+    <a href="{% url 'gallery_create' %}" class="btn btn-primary">
+        <i class="fas fa-plus-circle"></i> Create Gallery
+    </a>
+    <!-- Gallery Cards Section -->
+    {% if galleries %}
+    <div class="row">
+        {% for gallery in galleries %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    {% if gallery.image %}
+                        <img src="{{ gallery.image.url }}" class="card-img-top" alt="{{ gallery.name }}">
+                    {% else %}
+                        <img src="{% static 'images/gallery-images/gallery-image-1.jpg' %}" class="card-img-top" alt="Default Image">
+                    {% endif %}
+                    
+                    <div class="card-body">
+                        <h5 class="card-title">{{ gallery.name }}</h5>
+                        <hr class="gold-divider">
+                        <p class="card-text"><strong>Location:</strong> {{ gallery.location }}</p>
+                        <p class="card-text"><strong>Theme:</strong> {{ gallery.theme }}</p>
+                        <p class="card-text"><strong>Description:</strong> {{ gallery.description }}</p>
+                        <!-- Edit and Delete Buttons -->
+                        <div class="d-flex justify-content-center mt-3">
+                            <a href="{% url 'gallery_update' gallery.id %}" class="btn btn-outline-primary btn-sm mr-2">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a href="{% url 'gallery_delete' gallery.id %}" class="btn btn-outline-danger"> 
+                             <i class="fas fa-trash"></i> Delete Gallery
+                         </a>
+                                             </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+     
+    </div>
+    {% else %}
+    <div class="text-center">
+        <p>You don't have any galleries yet. Create one to get started!</p>
+        
+    </div>
+    {% endif %}
+</div>
+
+<div class="footer">
+    <p>&copy; 2024 CodeWizards. All rights reserved.</p>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

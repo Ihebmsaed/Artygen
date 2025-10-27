@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Texte</title>
+</head>
+<body>
+    <h1>Générateur de Texte de Reformulation</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="description">Entrez la description à reformuler :</label><br>
+        <textarea id="description" name="description" rows="4" cols="50" required></textarea><br>
+        <input type="submit" value="Reformuler">
+    </form>
+
+    {% if reformulated %}
+    <h2>Reformulation :</h2>
+    <p>{{ reformulated }}</p>
+    {% endif %}
+</body>
+</html>

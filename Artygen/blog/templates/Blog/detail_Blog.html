@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <title>{{ post.title }} - Blog d'Art</title>
+
+    <!-- Google Font for Artistic Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Playfair+Display:wght@400&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap for responsive layout -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        /* General body styles */
+        body {
+            font-family: 'Playfair Display', serif; /* Use Playfair Display for body text */
+            background-color: #eaeaea; /* Light gray background */
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* Post Title */
+        .post-title {
+            font-family: 'Playfair Display', serif; /* Title uses Playfair Display */
+            font-size: 3rem;
+            color: #2a2a2a; /* Darker gray for contrast */
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        /* Post metadata (author and date) */
+        .post-meta {
+            text-align: center;
+            font-size: 1rem;
+            color: #8c8c8c; /* Medium gray for metadata */
+            margin-bottom: 20px;
+        }
+
+        /* Post Content styling */
+        .post-content {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff; /* White background for content */
+            padding: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            line-height: 1.7;
+            font-family: 'Playfair Display', serif; /* Maintain font for post content */
+        }
+
+        /* Optional Post Image */
+        .post-content img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px; /* Rounded corners for images */
+            margin-top: 20px;
+        }
+
+        /* Back button */
+        .back-btn {
+            display: block;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.2rem;
+            color: #FFC700; /* Gold color for back button */
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .back-btn:hover {
+            color: #e6b800; /* Darker gold on hover */
+            text-decoration: underline;
+        }
+        
+        /* Divider between sections */
+        hr {
+            border: none;
+            border-bottom: 2px solid #dcdcdc; /* Light gray divider */
+            margin: 40px 0;
+        }
+    </style>
+</head>
+
+<body>
+    {% include '../Blog/navbar.html' %}
+
+    <!-- Blog Post Title -->
+    <div class="post-title">
+        {{ post.title }}
+    </div>
+
+    <!-- Post Metadata (Author and Date) -->
+    <div class="post-meta">
+        By <strong>{{ post.author }}</strong> | Published on {{ post.date_posted }}
+    </div>
+
+    <!-- Post Content -->
+    <div class="post-content">
+        <p>{{ post.content }}</p>
+        
+        <!-- Optional: Post Image -->
+        {% if post.image %}
+        <img src="{{ post.image.url }}" class="img-fluid" alt="{{ post.title }}">
+        {% endif %}
+    </div>
+
+    <!-- Divider -->
+    <hr>
+    
+    <!-- Back to Blog Button -->
+    <a href="{% url 'post-home' %}" class="back-btn">Back to Blog</a> <!-- Replace with the correct URL name -->
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

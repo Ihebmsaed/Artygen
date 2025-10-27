@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My artworks</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/custom-forms.css' %}">
+    <style>
+        body {
+            background-color: #f7f7f7; /* Fond gris clair */
+            font-family: 'Arial', sans-serif; /* Police générale */
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 30px;
+            color: #333;
+            font-weight: bold; /* Gras pour le titre */
+        }
+
+        .container {
+            padding: 20px; /* Espacement intérieur pour la container */
+        }
+
+        /* Styles pour la barre de recherche et les boutons */
+        .search-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px; /* Espacement sous la barre de recherche */
+        }
+
+        .search-container input {
+            width: 300px; /* Largeur du champ de recherche */
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-right: 10px; /* Espacement entre le champ et le bouton */
+        }
+
+        .add-artwork-btn,
+        .generate-art-btn {
+            padding: 11px 16px;
+            border-radius: 5px;
+            background-color: #d4af37;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-left: 10px; /* Espacement entre les boutons */
+            text-decoration: none; /* Enlever le soulignement */
+            display: inline-block; /* Permettre à l'élément d'agir comme un bouton */
+        }
+
+        .add-artwork-btn:hover,
+        .generate-art-btn:hover {
+            background-color: #b68c2a;
+            color: white;
+            text-decoration: none;
+        }
+
+        .search-container button {
+            padding: 8px 16px;
+            border-radius: 5px;
+            background-color: #808080; /* Couleur de fond gris */
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-left: 10px; /* Espacement entre les boutons */
+            transition: background-color 0.3s; /* Transition pour le survol */
+        }
+
+        .search-container button:hover {
+            background-color: #606060; /* Couleur plus foncée au survol */
+        }
+
+        .card {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s; /* Effet d'animation */
+        }
+
+        .card:hover {
+            transform: scale(1.02); /* Agrandissement au survol */
+        }
+
+        .card img {
+            border-radius: 10px 10px 0 0;
+            height: 200px;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            color: #333;
+            font-weight: bold; /* Titre gras */
+        }
+
+        .card-text {
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .card a {
+            background-color: #d4af37;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            transition: background-color 0.3s; /* Transition pour le bouton */
+        }
+
+        .card a:hover {
+            background-color: #b68c2a;
+        }
+
+        .alert {
+            margin-bottom: 20px; /* Espacement pour les alertes */
+        }
+    </style>
+</head>
+
+<body>
+    {% include '../artwork/navbar.html' %}
+
+    <h1>My artworks</h1>
+
+    <!-- Barre de recherche centrée -->
+    <div class="container">
+        <div class="search-container">
+            <form method="GET" action="">
+                <input type="text" name="search" placeholder="Rechercher par tag..." value="{{ search_query }}">
+                <button type="submit">Search</button>
+                <button type="button" class="add-artwork-btn" data-toggle="modal" data-target="#addArtworkModal">
+                    <i class="fas fa-plus-circle"></i> Add Artwork
+                </button>
+                <a href="http://127.0.0.1:8000/generate/" class="generate-art-btn">
+                    <i class="fas fa-magic"></i> Generate Art with AI
+                </a>
+            </form>
+        </div>
+    </div>
+
+    <!-- Messages Django sous forme de toasts -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="django-message" data-type="{% if 'success' in message.tags %}success{% elif 'error' in message.tags %}error{% elif 'warning' in message.tags %}warning{% else %}info{% endif %}" style="display: none;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="container">
+        <div class="row">
+            {% for artwork in artworks %}
+            <div class="col-md-4 mb-4"> <!-- 3 colonnes par ligne sur écran moyen et plus -->
+                <div class="card">
+                    <img src="{{ artwork.file.url }}" alt="{{ artwork.title }} - Image" loading="lazy">
+                    <div class="card-body">
+                        <h5 class="card-title">Title : {{ artwork.title }}</h5>
+                        <p class="card-text">Category : {{ artwork.category }}</p>
+                        <p class="card-text">Description : {{ artwork.description|truncatewords:10 }}</p>
+                        <a href="{% url 'artwork_detail' artwork.pk %}">See Details</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+<!-- Modal pour ajouter un artwork -->
+<div class="modal fade custom-modal" id="addArtworkModal" tabindex="-1" role="dialog" aria-labelledby="addArtworkModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addArtworkModalLabel">
+                    <i class="fas fa-plus-circle"></i> Add New Artwork
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white; opacity: 1;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="POST" action="{% url 'artwork_create' %}" enctype="multipart/form-data" data-validate="true" onsubmit="handleFormSubmit(event, this)">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="custom-form-group">
+                        <label for="artworkTitle" class="custom-form-label">
+                            <i class="fas fa-heading"></i> Title <span class="required">*</span>
+                        </label>
+                        <input type="text" class="form-control custom-form-control" id="artworkTitle" name="title" placeholder="Enter artwork title" required minlength="3">
+                    </div>
+
+                    <div class="custom-form-group">
+                        <label for="artworkDescription" class="custom-form-label">
+                            <i class="fas fa-align-left"></i> Description <span class="required">*</span>
+                        </label>
+                        <textarea class="form-control custom-form-control auto-resize" id="artworkDescription" name="description" rows="4" placeholder="Describe your artwork..." required minlength="10"></textarea>
+                    </div>
+
+                    <div class="custom-form-group">
+                        <label for="artworkCategory" class="custom-form-label">
+                            <i class="fas fa-folder"></i> Category <span class="required">*</span>
+                        </label>
+                        <select class="form-control custom-form-control custom-select" id="artworkCategory" name="category" required>
+                            <option value="">Choose a category...</option>
+                            {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="custom-form-group">
+                        <label for="artworkFile" class="custom-form-label">
+                            <i class="fas fa-image"></i> Image File <span class="required">*</span>
+                        </label>
+                        <input type="file" class="form-control custom-form-control" id="artworkFile" name="file" accept="image/*" required>
+                        <small class="form-text text-muted">Accepted formats: JPG, PNG, GIF. Max size: 5MB</small>
+                    </div>
+
+                    <div class="custom-form-group">
+                        <label for="artworkTags" class="custom-form-label">
+                            <i class="fas fa-tags"></i> Tags
+                        </label>
+                        <input type="text" class="form-control custom-form-control" id="artworkTags" name="tags" placeholder="art, modern, abstract... (separated by commas)">
+                        <small class="form-text text-muted">Add tags to make your artwork easier to find</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-custom-secondary" data-dismiss="modal">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-custom-primary" id="addArtworkSubmitBtn">
+                        <i class="fas fa-save"></i> Add Artwork
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/modal-handler.js' %}"></script>
+
+<script>
+function handleFormSubmit(event, form) {
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.classList.add('btn-loading');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+}
+
+// Auto-resize textarea
+document.querySelectorAll('.auto-resize').forEach(textarea => {
+    textarea.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
+    });
+});
+</script>
+
+</body>
+
+</html>

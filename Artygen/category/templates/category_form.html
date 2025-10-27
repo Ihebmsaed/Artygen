@@ -1,0 +1,201 @@
+
+<form method="post" enctype="multipart/form-data" class="category-form">
+  {% csrf_token %}
+  <h2 class="text-center mb-4">Create New Category</h2>
+
+  <div class="mb-4">
+    <label for="id_name" class="form-label label-bold">Category Name</label>
+    <input
+      type="text"
+      class="form-control custom-input"
+      id="id_name"
+      name="name"
+      value="{{ form.name.value }}"
+      placeholder="Enter category name"
+      required
+    />
+  </div>
+
+  <div class="mb-4">
+    <label for="id_description" class="form-label label-bold"
+      >Category Description</label
+    >
+    <textarea
+      class="form-control custom-input color-gray"
+      id="id_description"
+      name="description"
+      rows="4"
+      placeholder="Enter category description here..."
+      required
+    >
+        {{ form.description.value }}
+      </textarea
+    >
+  </div>
+
+  <div class="mb-6">
+    <label for="id_image" class="form-label label-bold">Category Image</label>
+    <div class="file-input-container">
+      <input
+        type="file"
+        class="form-control custom-input-file"
+        id="id_image"
+        name="image"
+        accept="image/*"
+        required
+      />
+      <label for="id_image" class="custom-file-label">
+        <i class="fas fa-upload"></i> Choose a file
+      </label>
+    </div>
+  </div>
+
+  <div class="button-group mt-4">
+    <button type="submit" class="btn custom-btn btn-create mt-3">Create</button>
+    <a href="{% url 'category-list' %}" class="btn custom-btn btn-cancel mt-3"
+      >Cancel</a
+    >
+  </div>
+</form>
+
+<style>
+  /* General form styling */
+  .category-form {
+    background-color: #ffffff; /* White background */
+    padding: 2.5rem; /* Increased padding */
+    border-radius: 10px; /* Softer corners */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Softer shadow */
+    max-width: 600px;
+    margin: 0 auto;
+    font-family: 'Arial', sans-serif; /* Modern font for the form */
+  }
+
+  /* Form title styling */
+  h2 {
+    color: #d4af37; /* Gold color */
+    font-family: 'Georgia', serif; /* Elegant font for the title */
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  /* Input field labels */
+  .label-bold {
+    color: #666; /* Gray color */
+    font-weight: bold; /* Bold text */
+    margin-bottom: 1rem; /* Space between label and input */
+  }
+
+  /* Input fields */
+  .custom-input {
+    width: 100%; /* Full width for uniformity */
+    border-radius: 8px; /* Softer corners */
+    border: 1px solid #d4af37; /* Gold border */
+    background-color: #f8f9fa; /* Light gray background */
+    padding: 0.8rem; /* Consistent padding */
+    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    font-size: 1rem; /* Consistent font size */
+    color: #333; /* Dark text color */
+    margin-bottom: 1rem; /* Space between input fields */
+    margin-top: 1rem; /* Space above input fields */
+  }
+
+  .custom-input::placeholder {
+    color: #999; /* Lighter placeholder color */
+  }
+
+  .custom-input:focus {
+    border-color: #b5942a; /* Darker gold on focus */
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.5); /* Gold shadow on focus */
+    outline: none; /* Remove default outline */
+  }
+
+  /* File input styling */
+  .custom-input-file {
+    display: none; /* Hide default file input */
+  }
+
+  .file-input-container {
+    position: relative;
+    margin-bottom: 1.5rem; /* Space below the file input */
+  }
+
+  .custom-file-label {
+    display: inline-flex; /* Flexbox for alignment */
+    align-items: center; /* Center the icon and text */
+    padding: 0.8rem;
+    border: 1px solid #d4af37; /* Gold border */
+    border-radius: 8px; /* Softer corners */
+    background-color: white; /* White background */
+    color: #333; /* Dark text */
+    cursor: pointer; /* Pointer cursor */
+    transition: background-color 0.3s, border-color 0.3s; /* Smooth transitions */
+    width: 100%; /* Full width */
+    text-align: center; /* Center text */
+    margin-top: 1rem; /* Space above label */
+  }
+
+  .custom-file-label i {
+    margin-right: 0.5rem; /* Space between icon and text */
+  }
+
+  .custom-file-label:hover {
+    background-color: #d4af37; /* Gold on hover */
+    color: white; /* White text on hover */
+  }
+
+  /* Button Group */
+  .button-group {
+    display: flex;
+    justify-content: center; /* Center the buttons */
+    gap: 1rem; /* Space between buttons */
+  }
+
+  /* Buttons */
+  .custom-btn {
+    font-size: 1rem;
+    padding: 0.5rem 1rem; /* Simple and compact padding */
+    border-radius: 8px; /* Softer corners for buttons */
+    border: 1px solid #d4af37; /* Gold border */
+    background-color: white; /* White background */
+    color: #d4af37; /* Gold text */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transitions */
+    text-transform: uppercase; /* Uppercase for modern look */
+  }
+
+  .custom-btn:hover {
+    background-color: #d4af37; /* Gold background on hover */
+    color: white; /* White text on hover */
+  }
+
+  /* Cancel button */
+  .btn-cancel {
+    background-color: white; /* White background */
+    color: #4a4a4a; /* Dark gray text */
+    border: 1px solid #4a4a4a; /* Dark gray border */
+  }
+
+  .btn-cancel:hover {
+    background-color: #4a4a4a; /* Dark gray on hover */
+    color: white; /* White text on hover */
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .category-form {
+      padding: 1.5rem; /* Adjust padding on smaller screens */
+    }
+
+    .custom-btn {
+      width: 100%; /* Full width buttons on mobile */
+      margin: 0.5rem 0; /* Space between buttons */
+    }
+  }
+</style>
+
+<!-- Include Font Awesome for the icon -->
+<script
+  src="https://kit.fontawesome.com/a076d05399.js"
+  crossorigin="anonymous"
+></script>

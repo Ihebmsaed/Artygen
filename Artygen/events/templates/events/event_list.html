@@ -1,0 +1,179 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event List</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'website/styles.css' %}">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        header {
+            background-color: #d4af37; /* Golden color */
+            color: white;
+        }
+        .separator-line {
+            border: 0;
+            height: 2px;
+            background-color: #d4af37; /* Golden color for the separator */
+            margin: 50px 0; /* Adjust margin to control spacing between sections */
+        }
+        .icon-section {
+            padding: 40px 0; /* More padding for better spacing */
+            margin-top: 40px; /* More margin for separation */
+        }
+        .icon-item {
+            text-align: center;
+            padding: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-radius: 10px;
+            background-color: white; /* White background for contrast */
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+            margin: 20px; /* Horizontal margin between icons */
+            flex: 1; /* Ensure icons take equal space in the row */
+        }
+        .icon-item:hover {
+            transform: translateY(-5px); /* Slight upward movement on hover */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+        }
+        .icon-item i {
+            font-size: 3.54rem;
+            color: #d4af37; /* Golden color for icons */
+            margin-bottom: 15px;
+        }
+        /* Events Section Style */
+        .event-card {
+            background-color: white; /* White background for card consistency */
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow like icons */
+            border: none; /* Remove default border */
+            border-radius: 10px; /* Rounded corners for a modern look */
+            transition: transform 0.3s, box-shadow 0.3s; /* Animation for hover effect */
+            margin: 15px; /* Margin between cards */
+        }
+        .event-card:hover {
+            transform: translateY(-5px); /* Slight hover lift effect */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+        }
+        .event-card h5 {
+            color: #d4af37; /* Golden color for event titles */
+            margin-bottom: 15px;
+        }
+        .event-card .card-text i {
+            color: #6c757d; /* Grey color for date icons */
+            margin-right: 8px;
+        }
+        .btn-outline-primary {
+            border-color: #d4af37; /* Golden border */
+            color: #d4af37; /* Golden text color */
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .btn-outline-primary:hover {
+            background-color: #d4af37; /* Golden background on hover */
+            color: white; /* White text on hover */
+        }
+        .event-image {
+            height: 200px; /* Fixed height for images */
+            object-fit: cover; /* Ensure images cover the space without distortion */
+            border-top-left-radius: 10px; /* Rounded corners matching the card */
+            border-top-right-radius: 10px; /* Rounded corners matching the card */
+        }
+        .btn-create {
+            transition: all 0.3s ease;
+        }
+        .btn-create:hover {
+            background-color: #b68c2a !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+        }
+    </style>
+</head>
+<body>
+    {% include '../events/navbar.html' %}
+
+
+    <header class="text-center py-5">
+        <h1>Welcome to Our Events</h1>
+        <p>Explore the exciting events we have lined up for you!</p>
+        {% if user.is_authenticated %}
+        <a href="{% url 'event_create' %}" class="btn btn-lg mt-3 btn-create" style="background-color: #d4af37; color: white; border: none;">
+            <i class="fas fa-plus-circle"></i> Create New Event
+        </a>
+        {% endif %}
+    </header>
+
+    <main class="container mt-5">
+
+        <!-- Hero Section -->
+        <section class="hero text-center mb-4">
+            <h2>Upcoming Events</h2>
+            <p>Don’t miss out on our latest events! Check them out below.</p>
+        </section>
+
+        <!-- Golden Separator Line -->
+        <hr class="separator-line">
+
+        <!-- Events Section -->
+        <section class="events mt-5">
+            <h2 class="text-center mb-4">All Events</h2>
+            <div class="row">
+                {% for event in events %}
+                    <div class="col-md-4">
+                        <div class="card event-card mb-4">
+                            <!-- Event Image -->
+                            <img src="{{ event.image.url }}" class="card-img-top event-image" alt="{{ event.title }}">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">{{ event.title }}</h5>
+                                <p class="card-text"><i class="fas fa-calendar-alt"></i> {{ event.date }}</p>
+                                <p class="card-text">{{ event.description }}</p>
+                                <a href="{% url 'event_detail' event.id %}" class="btn btn-outline-primary">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Golden Separator Line -->
+        <hr class="separator-line">
+
+        <!-- Icon Section -->
+        <section class="icon-section">
+            <h2 class="text-center">What We Offer</h2>
+            <div class="row">
+                <div class="col-md-4 icon-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h5>Upcoming Events</h5>
+                    <p>Stay updated with our latest events and activities.</p>
+                </div>
+                <div class="col-md-4 icon-item">
+                    <i class="fas fa-users"></i>
+                    <h5>Community Engagement</h5>
+                    <p>Join our community and be part of something bigger.</p>
+                </div>
+                <div class="col-md-4 icon-item">
+                    <i class="fas fa-info-circle"></i>
+                    <h5>Information Center</h5>
+                    <p>Get all the information you need for a great experience.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-4">
+        <p>&copy; 2024 Your Organization. All rights reserved.</p>
+    </footer>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="{% static 'website/scripts.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <title>Inspiration - Blog d'Art</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Body styling */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        h1 {
+            font-family: 'Playfair Display', serif;
+            text-align: center;
+            color: #5a5a5a;
+            margin: 40px 0;
+            font-size: 3rem;
+        }
+        .post-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+        .modal-header {
+            background-color: #343a40;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Inspiration - Blog d'Art</h1>
+
+    <!-- Button to trigger the modal -->
+    <div class="text-center mb-4">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newPostModal">
+            Créer un nouveau post
+        </button>
+    </div>
+
+    <!-- Blog Post Loop -->
+    <div class="container">
+        {% for post in posts %}
+        <div class="post-container">
+            <div class="text-center">
+                <h2><a href="{% url 'post-detail' post.pk %}">{{ post.title }}</a></h2>
+                <h3>Par: {{ post.author }}</h3>
+                <p>{{ post.content }}</p>
+                <p>Publié le: {{ post.date_posted }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Modal for New Post -->
+    <div class="modal fade" id="newPostModal" tabindex="-1" aria-labelledby="newPostModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newPostModalLabel">Créer un nouveau post</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{% url 'post-Create' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="title">Titre</label>
+                            <input type="text" name="title" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="content">Contenu</label>
+                            <textarea name="content" class="form-control" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success">Publier</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

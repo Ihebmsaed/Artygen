@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Full</title>
+</head>
+<body>
+    {% include '../events/navbar.html' %}
+
+    <h2>The event "{{ event.title }}" is full</h2>
+    <p>Unfortunately, this event has reached its maximum capacity.</p>
+    <a href="{% url 'available_events' %}">Back to Available Events</a>
+</body>
+</html>

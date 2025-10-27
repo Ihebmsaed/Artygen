@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <title>Mon Site d'Art</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        /* Custom Navbar Styles */
+        .navbar {
+            background-color: #f8f9fa; /* Light gray background */
+            padding: 1rem; /* Add some padding */
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem; /* Larger brand font */
+            color: #333; /* Dark gray text */
+            transition: color 0.3s; /* Smooth color transition */
+        }
+
+        .navbar-brand:hover {
+            color: #FFC700; /* Gold color on hover */
+        }
+
+        .navbar-nav .nav-item .nav-link {
+            color: #333; /* Dark gray for nav links */
+            font-weight: 500; /* Medium font weight */
+            padding: 0.75rem 1rem; /* Adjust padding for nav links */
+            transition: color 0.3s, background-color 0.3s; /* Smooth transitions */
+        }
+
+        .navbar-nav .nav-item .nav-link:hover {
+            color: #fff; /* White text on hover */
+            background-color: #FFC700; /* Gold background on hover */
+            border-radius: 5px; /* Rounded corners on hover */
+        }
+
+        /* For mobile view */
+        .navbar-toggler {
+            border-color: #FFC700; /* Gold border for toggler */
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30' fill='%23FFC700'%3E%3Cpath stroke='none' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0.5rem; /* Adjust padding for mobile */
+            }
+
+            .navbar-nav .nav-item .nav-link {
+                padding: 0.5rem 1rem; /* Adjust padding for mobile links */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'profile' %}">Artygen</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/accounts/profile/">Profil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/blog">Blog</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/gallery/">Gallery</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/artwork/galleries/">Collection</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/artwork/">MyArtwork</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/artwork/all/">Artworks</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/category/categories">Category</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/events/">Events</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/feedback/feedbacks/">Feedback</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
