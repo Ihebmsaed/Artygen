@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: artygen
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn artify.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: False
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: HF_TOKEN
+        sync: false
+    
+databases:
+  - name: artygen-db
+    databaseName: artygen
+    user: artygen
