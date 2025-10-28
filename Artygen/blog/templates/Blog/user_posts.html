@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -237,7 +237,11 @@
         <div class="gallery" id="gallery">
             {% for post in posts %}
             <div class="post-container gallery-item">
-                <img src="../../../profile_photos/pic.jpg" alt="{{ post.title }}" class="post-image">
+                {% if post.author_profile_photo %}
+                <img src="{{ post.author_profile_photo }}" alt="{{ post.title }}" class="post-image">
+                {% else %}
+                <img src="/profile_photos/default.jpg" alt="{{ post.title }}" class="post-image">
+                {% endif %}
                 <div class="hethai">
                     <div class="post-title">{{ post.title }}</div>
                     <p class="post-content">
@@ -296,3 +300,4 @@
 </body>
 
 </html>
+

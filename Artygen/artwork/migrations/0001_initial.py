@@ -24,4 +24,4 @@ class Migration(migrations.Migration):
                 ('tags', models.CharField(blank=True, max_length=255, null=True)),
             ],
         ),
-    ]
+    ] 

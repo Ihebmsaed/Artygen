@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib import messages
 
+
 def artwork_list(request):
     search_query = request.GET.get('search', '') 
     artworks = Artwork.objects.filter(user=request.user) 
@@ -20,6 +21,7 @@ def artwork_list(request):
     }
     return render(request, 'artwork/artwork_list.html', context)
 
+
 def artwork_detail(request, pk):
     artwork = get_object_or_404(Artwork, pk=pk)
     return render(request, 'artwork/artwork_detail.html', {'artwork': artwork})
@@ -33,7 +35,7 @@ def artwork_create(request):
             artwork.user = request.user  
             artwork.save()  
             
-            messages.success(request, "✅ Nouvelle œuvre ajoutée avec succès !")
+            messages.success(request, "✅ New artwork added successfully!")
             
             return redirect('artwork_list')
     else:
@@ -51,7 +53,7 @@ def artwork_update(request, pk):
         form = ArtworkForm(request.POST, request.FILES, instance=artwork)
         if form.is_valid():
             form.save()  
-            messages.success(request, '✅ L\'œuvre a été modifiée avec succès.')  
+            messages.success(request, '✅ The artwork has been modified successfully.')  
             return redirect('artwork_list')  
     else:
         form = ArtworkForm(instance=artwork)
@@ -66,7 +68,7 @@ def artwork_delete(request, pk):
         return redirect('artwork_list')
     if request.method == 'POST':
         artwork.delete() 
-        messages.success(request, 'L\'œuvre a été supprimée avec succès.')  
+        messages.success(request, 'The artwork has been deleted successfully.')  
         return redirect('artwork_list')  
 
     return render(request, 'artwork/artwork_confirm_delete.html', {'artwork': artwork})
@@ -98,14 +100,14 @@ def add_to_gallery(request, artwork_id):
                 new_collection.user = request.user
                 new_collection.save()
                 new_collection.artworks.add(artwork)
-                messages.success(request, "L'œuvre a été ajoutée à la galerie avec succès !")
+                messages.success(request, "The artwork has been added to the gallery successfully!")
                 return redirect('http://127.0.0.1:8000/artwork/all/')
         else:
             selected_gallery = request.POST.get('gallery')
             if selected_gallery:
                 gallery = get_object_or_404(ArtCollection, id=selected_gallery)
                 gallery.artworks.add(artwork)
-                messages.success(request, "L'œuvre a été ajoutée à la galerie avec succès !")
+                messages.success(request, "The artwork has been added to the gallery successfully!")
                 return redirect('http://127.0.0.1:8000/artwork/all/')
 
     form = ArtCollectionForm()
@@ -122,7 +124,7 @@ def add_to_gallery(request, artwork_id):
 
 def collection_list(request):
     if request.method == 'POST' and request.user.is_authenticated:
-        # Création d'une nouvelle collection
+        # Create a new collection
         name = request.POST.get('name')
         description = request.POST.get('description', '')
         
@@ -131,9 +133,9 @@ def collection_list(request):
                 name=name,
                 user=request.user
             )
-            messages.success(request, f'Collection "{name}" créée avec succès!')
+            messages.success(request, f'Collection "{name}" created successfully!')
         else:
-            messages.error(request, 'Le nom de la collection est requis.')
+            messages.error(request, 'Collection name is required.')
         
         return redirect('collection_list')
     
@@ -170,7 +172,7 @@ def remove_artwork_from_gallery(request, gallery_id, artwork_id):
 
     gallery.artworks.remove(artwork)
     
-    messages.success(request, 'L\'œuvre d\'art a été retirée de la galerie avec succès.')
+    messages.success(request, 'The artwork has been removed from the gallery successfully.')
 
     return redirect('collection_detail', gallery_id=gallery.id) 
 
@@ -183,7 +185,7 @@ def collection_delete(request, gallery_id):
 
     if request.method == 'POST':
         gallery.delete()
-        messages.success(request, 'La galerie a été supprimée avec succès.')  
+        messages.success(request, 'The gallery has been deleted successfully.')  
         return redirect('collection_list')  
 
     return render(request, 'artwork/gallery_confirm_delete.html', {'gallery': gallery})

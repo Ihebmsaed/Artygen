@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 print("=" * 60)
 print("TEST DE L'API HUGGING FACE POUR GÉNÉRATION D'IMAGES")
 print("=" * 60)

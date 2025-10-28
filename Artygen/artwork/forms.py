@@ -7,18 +7,19 @@ class ArtworkForm(forms.ModelForm):
         model = Artwork
         fields = ['title', 'description', 'category', 'file', 'tags']
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Titre de l\'œuvre'}),
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Artwork Title'}),
  'description': forms.Textarea(attrs={
                 'class': 'form-control', 
-                'placeholder': 'Description de l\'œuvre',
-                'rows': 3,  # Réduit la hauteur (nombre de lignes)
-                'cols': 50  # Largeur optionnelle (tu peux ajuster ou supprimer cet attribut)
-            }),            'category': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Categorie de l\'œuvre'}),
+                'placeholder': 'Artwork Description',
+                'rows': 3,  # Reduced height (number of lines)
+                'cols': 50  # Optional width (you can adjust or remove this attribute)
+            }),            'category': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Artwork Category'}),
 
             'file': forms.ClearableFileInput(attrs={'class': 'form-control'}),
             'tags': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Tags'}),
         }
+
 class ArtCollectionForm(forms.ModelForm):
     class Meta:
         model = ArtCollection
-        fields = ['name']  # Si vous avez d'autres champs, ajoutez-les ici
+        fields = ['name']  

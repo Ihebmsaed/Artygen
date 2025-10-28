@@ -31,11 +31,11 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-custom-secondary" data-dismiss="modal">
-                        <i class="fas fa-times"></i> Annuler
+                        <i class="fas fa-times"></i> Cancel
                     </button>
                     <button type="submit" class="btn btn-custom-primary" id="{{ modal_id }}SubmitBtn">
                         {% if submit_icon %}<i class="{{ submit_icon }}"></i>{% endif %}
-                        {{ submit_text|default:'Enregistrer' }}
+                        {{ submit_text|default:'Save' }}
                     </button>
                 </div>
             </form>
@@ -53,3 +53,4 @@ function handleFormSubmit(event, form) {
     // La restauration du bouton se fera au rechargement de la page
 }
 </script>
+

@@ -121,7 +121,7 @@ def subcategory_create(request, category_id):
                     )
                     return JsonResponse({
                         'success': True,
-                        'message': 'Sous-catégorie ajoutée avec succès',
+                        'message': 'Subcategory added successfully',
                         'subcategory': {
                             'id': subcategory.id,
                             'name': subcategory.name,
@@ -131,7 +131,7 @@ def subcategory_create(request, category_id):
                 except Exception as e:
                     return JsonResponse({'success': False, 'error': str(e)}, status=400)
             else:
-                return JsonResponse({'success': False, 'error': 'Le nom est requis'}, status=400)
+                return JsonResponse({'success': False, 'error': 'Name is required'}, status=400)
         else:
             # Traiter comme un formulaire normal
             form = SubcategoryForm(request.POST)
@@ -173,31 +173,31 @@ from django.conf import settings
 @csrf_exempt
 def get_art_subcategories(request, category_id):
     try:
-        # Configure the API key depuis .env ou settings.py
+        # Configure the API key from .env or settings.py
         api_key = os.getenv("API_KEY") or settings.GEMINI_API_KEY
         if not api_key:
             return JsonResponse({'error': 'API key not configured'}, status=500)
         
         genai.configure(api_key=api_key)
 
-        # Create a Gemini model instance avec le nouveau modèle
+        # Create a Gemini model instance with the new model
         model = genai.GenerativeModel('gemini-2.0-flash')
 
         # Retrieve the category by ID
         category = Category.objects.get(id=category_id)
         category_name = category.name
 
-        # Prompt amélioré pour obtenir un format structuré
-        prompt = f"""Liste exactement 5 sous-catégories pour la catégorie artistique '{category_name}'.
-Pour chaque sous-catégorie, fournis le nom et une brève description sur la même ligne.
-Format strict (une par ligne):
-Nom de la sous-catégorie: Description courte
+        # Improved prompt to get a structured format
+        prompt = f"""List exactly 5 subcategories for the artistic category '{category_name}'.
+For each subcategory, provide the name and a brief description on the same line.
+Strict format (one per line):
+Subcategory Name: Short description
 
-Exemple:
-Portraits: Représentations artistiques de personnes
-Paysages: Scènes naturelles ou urbaines
+Example:
+Portraits: Artistic representations of people
+Landscapes: Natural or urban scenes
 
-Génère maintenant les 5 sous-catégories pour '{category_name}'."""
+Now generate the 5 subcategories for '{category_name}'."""
 
         # Generate the response
         response = model.generate_content(prompt)
@@ -210,7 +210,7 @@ Génère maintenant les 5 sous-catégories pour '{category_name}'."""
         for line in lines:
             line = line.strip()
             
-            # Ignorer les lignes vides, les titres et les numéros
+            # Ignore empty lines, titles and numbers
             if not line:
                 continue
             if line.startswith('#'):
@@ -220,32 +220,32 @@ Génère maintenant les 5 sous-catégories pour '{category_name}'."""
             if line.lower().startswith('exemple'):
                 continue
                 
-            # Supprimer les numéros au début (1., 2., *, -, etc.)
+            # Remove numbers at the beginning (1., 2., *, -, etc.)
             line = line.lstrip('0123456789.*- ')
             
-            # Essayer de parser avec ':'
+            # Try to parse with ':'
             if ':' in line:
                 parts = line.split(':', 1)
                 subcategory = parts[0].strip().replace('**', '').replace('*', '').strip()
                 description = parts[1].strip() if len(parts) > 1 else ''
                 
-                # Vérifier que ce n'est pas vide et pas trop long (probablement pas un titre)
+                # Check that it's not empty and not too long (probably not a title)
                 if subcategory and len(subcategory) < 100 and description:
                     subcategories.append({
                         'subcategory': subcategory,
                         'description': description
                     })
                     
-                    # Limiter à 5 sous-catégories
+                    # Limit to 5 subcategories
                     if len(subcategories) >= 5:
                         break
 
-        # Si aucune sous-catégorie n'a été trouvée avec le format attendu
+        # If no subcategories were found with the expected format
         if not subcategories:
-            # Retourner la réponse brute pour debug
+            # Return the raw response for debug
             return JsonResponse({
                 'subcategories': [{
-                    'subcategory': f'Réponse non parsée pour {category_name}',
+                    'subcategory': f'Unparsed response for {category_name}',
                     'description': response.text[:200]
                 }]
             })

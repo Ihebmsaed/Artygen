@@ -17,25 +17,25 @@ class CustomUserCreationForm(UserCreationForm):
     profile_image = forms.ImageField(required=False, help_text='📷 Upload your profile picture (optional).')
     role = forms.ChoiceField(choices=ROLE_CHOICES, required=True, help_text='Select User Role')
     
-    # Nouveaux champs pour la génération de bio IA
+    # New fields for AI bio generation
     art_style = forms.CharField(
         max_length=200, 
         required=False,
-        help_text='🎨 Votre style artistique (ex: Abstrait, Réaliste, Digital Art, Photographie...)',
-        widget=forms.TextInput(attrs={'placeholder': 'Ex: Peinture abstraite, Art digital futuriste...'})
+        help_text='🎨 Your artistic style (ex: Abstract, Realistic, Digital Art, Photography...)',
+        widget=forms.TextInput(attrs={'placeholder': 'Ex: Abstract painting, futuristic digital art...'})
     )
     art_interests = forms.CharField(
         required=False,
-        help_text='🌟 Vos intérêts artistiques et mots-clés (séparés par des virgules)',
+        help_text='🌟 Your artistic interests and keywords (separated by commas)',
         widget=forms.Textarea(attrs={
-            'placeholder': 'Ex: nature, portraits, couleurs vives, émotions, surréalisme, architecture...',
+            'placeholder': 'Ex: nature, portraits, bright colors, emotions, surrealism, architecture...',
             'rows': 3
         })
     )
     generate_bio = forms.BooleanField(
         required=False,
         initial=True,
-        help_text='✨ Générer automatiquement ma bio de profil avec IA',
+        help_text='✨ Automatically generate my profile bio with AI',
         widget=forms.CheckboxInput()
     )
 
@@ -68,17 +68,17 @@ class CustomUserCreationForm(UserCreationForm):
         if commit:
             user.save()
             
-            # Récupérer ou créer le profil (créé automatiquement par le signal)
+            # Get or create the profile (created automatically by the signal)
             profile = user.profile
             
-            # Mettre à jour les champs du profil
+            # Update profile fields
             profile.cin = self.cleaned_data['cin']
             profile.birthdate = self.cleaned_data['birthdate']
             profile.role = self.cleaned_data['role']
             profile.art_style = self.cleaned_data.get('art_style', '')
             profile.art_interests = self.cleaned_data.get('art_interests', '')
             
-            # Gérer la photo séparément (IMPORTANT pour les fichiers)
+            # Handle photo separately (IMPORTANT for files)
             profile_image = self.cleaned_data.get('profile_image')
             if profile_image:
                 profile.photo = profile_image

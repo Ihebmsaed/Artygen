@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -158,13 +158,13 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    Êtes-vous sûr de vouloir supprimer la galerie "{{ gallery.name }}" ?
+                                    Are you sure you want to delete the gallery "{{ gallery.name }}" ?
                                 </div>
                                 <div class="modal-footer">
                                     <form method="POST" action="{% url 'collection_delete' gallery.id %}">
                                         {% csrf_token %}
-                                        <button type="submit" class="btn btn-danger">Supprimer</button>
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                     </form>
                                 </div>
                             </div>
@@ -173,7 +173,7 @@
                 </div>
             {% endfor %}
         {% else %}
-            <p>Aucune galerie trouvée.</p>
+            <p>No gallery found.</p>
         {% endif %}
     </div>
 </div>
@@ -215,8 +215,10 @@
     </div>
 </div>
 
+
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+

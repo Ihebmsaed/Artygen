@@ -1,10 +1,10 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscription - Artygen</title>
+    <title>Registration - Artygen</title>
     
     <!-- Bootstrap -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -186,8 +186,8 @@
         <div class="register-card">
             <!-- Header -->
             <div class="register-header">
-                <h2><i class="fas fa-user-plus"></i> Créer un Compte</h2>
-                <p>Rejoignez la communauté Artygen</p>
+                <h2><i class="fas fa-user-plus"></i> Create Account</h2>
+                <p>Join the Artygen Community</p>
             </div>
             
             <!-- Messages -->
@@ -212,21 +212,21 @@
                             <span class="step-number">1</span>
                             <i class="fas fa-check" style="display:none;"></i>
                         </div>
-                        <div class="step-label">Identité</div>
+                        <div class="step-label">Identity</div>
                     </div>
                     <div class="step" data-step="2">
                         <div class="step-circle">
                             <span class="step-number">2</span>
                             <i class="fas fa-check" style="display:none;"></i>
                         </div>
-                        <div class="step-label">Compte</div>
+                        <div class="step-label">Account</div>
                     </div>
                     <div class="step" data-step="3">
                         <div class="step-circle">
                             <span class="step-number">3</span>
                             <i class="fas fa-check" style="display:none;"></i>
                         </div>
-                        <div class="step-label">Profil</div>
+                        <div class="step-label">Profile</div>
                     </div>
                 </div>
                 
@@ -237,14 +237,14 @@
                     <!-- Step 1: Personal Info -->
                     <div class="form-step active" data-step="1">
                         <h4 style="color: #d4af37; margin-bottom: 25px;">
-                            <i class="fas fa-id-card"></i> Informations Personnelles
+                            <i class="fas fa-id-card"></i> Personal Information
                         </h4>
                         
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group-modern">
                                     <label class="form-label-modern">
-                                        <i class="fas fa-user"></i> Prénom
+                                        <i class="fas fa-user"></i> First Name
                                     </label>
                                     {{ form.first_name }}
                                 </div>
@@ -252,7 +252,7 @@
                             <div class="col-md-6">
                                 <div class="form-group-modern">
                                     <label class="form-label-modern">
-                                        <i class="fas fa-user"></i> Nom
+                                        <i class="fas fa-user"></i> Last Name
                                     </label>
                                     {{ form.last_name }}
                                 </div>
@@ -270,7 +270,7 @@
                             <div class="col-md-6">
                                 <div class="form-group-modern">
                                     <label class="form-label-modern">
-                                        <i class="fas fa-calendar"></i> Date de Naissance
+                                        <i class="fas fa-calendar"></i> Date of Birth
                                     </label>
                                     {{ form.birthdate }}
                                 </div>
@@ -289,33 +289,33 @@
                     <!-- Step 2: Account Info -->
                     <div class="form-step" data-step="2">
                         <h4 style="color: #d4af37; margin-bottom: 25px;">
-                            <i class="fas fa-user-shield"></i> Informations du Compte
+                            <i class="fas fa-user-shield"></i> Account Information
                         </h4>
                         
                         <div class="form-group-modern">
                             <label class="form-label-modern">
-                                <i class="fas fa-at"></i> Nom d'utilisateur
+                                <i class="fas fa-at"></i> Username
                             </label>
                             {{ form.username }}
                         </div>
                         
                         <div class="form-group-modern">
                             <label class="form-label-modern">
-                                <i class="fas fa-lock"></i> Mot de passe
+                                <i class="fas fa-lock"></i> Password
                             </label>
                             {{ form.password1 }}
                         </div>
                         
                         <div class="form-group-modern">
                             <label class="form-label-modern">
-                                <i class="fas fa-lock"></i> Confirmer le mot de passe
+                                <i class="fas fa-lock"></i> Confirm Password
                             </label>
                             {{ form.password2 }}
                         </div>
                         
                         <div class="form-group-modern">
                             <label class="form-label-modern">
-                                <i class="fas fa-user-tag"></i> Rôle
+                                <i class="fas fa-user-tag"></i> Role
                             </label>
                             {{ form.role }}
                         </div>
@@ -324,36 +324,36 @@
                     <!-- Step 3: Profile & AI -->
                     <div class="form-step" data-step="3">
                         <h4 style="color: #d4af37; margin-bottom: 25px;">
-                            <i class="fas fa-palette"></i> Profil Artistique
+                            <i class="fas fa-palette"></i> Artistic Profile
                         </h4>
                         
                         <div class="form-group-modern">
                             <label class="form-label-modern">
-                                <i class="fas fa-camera"></i> Photo de Profil (optionnel)
+                                <i class="fas fa-camera"></i> Profile Photo (optional)
                             </label>
                             {{ form.profile_image }}
-                            <small class="form-text text-muted">Formats acceptés: JPG, PNG, GIF (max 5MB)</small>
+                            <small class="form-text text-muted">Accepted formats: JPG, PNG, GIF (max 5MB)</small>
                         </div>
                         
                         <!-- AI Bio Generator Section -->
                         <div class="ai-section">
                             <h5>
-                                <i class="fas fa-robot"></i> Génération de Bio par IA (Optionnel)
+                                <i class="fas fa-robot"></i> AI Bio Generation (Optional)
                             </h5>
                             <p style="color: #666; font-size: 0.95rem; margin-bottom: 20px;">
-                                Notre IA peut créer automatiquement une bio personnalisée pour vous!
+                                Our AI can automatically create a personalized bio for you!
                             </p>
                             
                             <div class="form-group-modern">
                                 <label class="form-label-modern">
-                                    <i class="fas fa-brush"></i> Style Artistique
+                                    <i class="fas fa-brush"></i> Artistic Style
                                 </label>
                                 {{ form.art_style }}
                             </div>
                             
                             <div class="form-group-modern">
                                 <label class="form-label-modern">
-                                    <i class="fas fa-heart"></i> Intérêts Artistiques
+                                    <i class="fas fa-heart"></i> Artistic Interests
                                 </label>
                                 {{ form.art_interests }}
                             </div>
@@ -361,7 +361,7 @@
                             <div class="custom-control custom-checkbox">
                                 {{ form.generate_bio }}
                                 <label class="custom-control-label" for="{{ form.generate_bio.id_for_label }}">
-                                    <strong>✨ Générer automatiquement ma bio de profil</strong>
+                                    <strong>✨ Automatically generate my profile bio</strong>
                                 </label>
                             </div>
                         </div>
@@ -370,20 +370,20 @@
                     <!-- Navigation Buttons -->
                     <div class="btn-nav">
                         <button type="button" class="btn-modern btn-outline-modern" id="prevBtn" style="display:none;">
-                            <i class="fas fa-arrow-left"></i> Précédent
+                            <i class="fas fa-arrow-left"></i> Previous
                         </button>
                         <button type="button" class="btn-modern btn-primary-modern" id="nextBtn">
-                            Suivant <i class="fas fa-arrow-right"></i>
+                            Next <i class="fas fa-arrow-right"></i>
                         </button>
                         <button type="submit" class="btn-modern btn-primary-modern" id="submitBtn" style="display:none;">
-                            <i class="fas fa-check-circle"></i> S'inscrire
+                            <i class="fas fa-check-circle"></i> Register
                         </button>
                     </div>
                 </form>
                 
                 <!-- Login Link -->
                 <div class="text-center mt-4">
-                    <p>Déjà un compte? <a href="{% url 'login' %}" style="color: #d4af37; font-weight: 600;">Se connecter</a></p>
+                    <p>Already have an account? <a href="{% url 'login' %}" style="color: #d4af37; font-weight: 600;">Login</a></p>
                 </div>
             </div>
         </div>
@@ -474,3 +474,4 @@
     </script>
 </body>
 </html>
+
