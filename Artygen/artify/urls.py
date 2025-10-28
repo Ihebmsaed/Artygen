@@ -11,7 +11,7 @@ from django.shortcuts import render
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
-    path('', lambda request: render(request, 'Modified_Files/home.html'), name='home'),
+    path('', lambda request: render(request, 'Modified_files/home.html'), name='home'),
     path('gallery/', include('gallery.urls')),  # Include gallery URLs
     path('feedback/', include('feedback.urls', namespace='feedback')), 
     path('blog/', include('blog.urls')),
