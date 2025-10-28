@@ -18,7 +18,8 @@ class ArtworkForm(forms.ModelForm):
             'file': forms.ClearableFileInput(attrs={'class': 'form-control'}),
             'tags': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Tags'}),
         }
+
 class ArtCollectionForm(forms.ModelForm):
     class Meta:
         model = ArtCollection
-        fields = ['name']  # Si vous avez d'autres champs, ajoutez-les ici
+        fields = ['name']  

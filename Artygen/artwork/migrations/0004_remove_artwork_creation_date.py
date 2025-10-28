@@ -14,4 +14,4 @@ class Migration(migrations.Migration):
             model_name='artwork',
             name='creation_date',
         ),
-    ]
+    ] 
