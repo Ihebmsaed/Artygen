@@ -85,13 +85,28 @@ def user_login(request):
 
 @login_required
 def profile(request):
+    from artwork.models import ArtCollection
+    from events.models import Event
+    from blog.models import Post, Favourites
+    
     profile_photo = request.user.profile.photo.url if request.user.profile.photo else None
+    
+    # Calculate user statistics
+    galleries_count = ArtCollection.objects.filter(user=request.user).count()
+    events_count = Event.objects.filter(creator=request.user).count()
+    posts_count = Post.objects.filter(author=request.user).count()
+    favorites_count = Favourites.objects.filter(user=request.user).count()
+    
     return render(request, 'accounts/profile.html', {
         'username': request.user.username,
         'user': request.user,
         'profile_photo': profile_photo,
         'join_date': request.user.date_joined.strftime('%B %d, %Y'),
-        'PROFILE_PHOTOS_URL': settings.PROFILE_PHOTOS_URL  # Pass the URL to the template
+        'PROFILE_PHOTOS_URL': settings.PROFILE_PHOTOS_URL,
+        'galleries_count': galleries_count,
+        'events_count': events_count,
+        'posts_count': posts_count,
+        'favorites_count': favorites_count
     })
 
 def user_logout(request):
