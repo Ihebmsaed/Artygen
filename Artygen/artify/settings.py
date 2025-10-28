@@ -50,8 +50,8 @@ INSTALLED_APPS = [
     'events',
     'artwork',
     'generator',
-        'feedback',
- 'gallery',
+    'feedback',
+    'gallery',
 
 ]
 

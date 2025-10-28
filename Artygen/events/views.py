@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-
+from django.http import JsonResponse
 from accounts import models
 from .models import Event
 from .forms import EventForm
@@ -8,6 +8,7 @@ from django.views.generic import ListView, DetailView
 from django.contrib import messages
 from gallery.models import Gallery  # Import the Gallery model
 from .utils import is_image_appropriate  # Import the utility function
+from .event_description_generator import get_event_description_generator
 
 @login_required
 def event_create(request):
@@ -76,6 +77,49 @@ class EventDetailView(DetailView):
     template_name = 'events/event_detail.html'
     context_object_name = 'event'
     
+@login_required
+def generate_event_description(request):
+    """
+    Vue pour générer une description d'événement avec IA via AJAX
+    """
+    if request.method == 'POST':
+        title = request.POST.get('title', '')
+        event_type = request.POST.get('event_type', '')
+        location = request.POST.get('location', '')
+        date = request.POST.get('date', '')
+        capacity = request.POST.get('capacity', '')
+        tone = request.POST.get('tone', 'professional')
+
+        # Validation basique
+        if not title or not event_type:
+            return JsonResponse({'success': False, 'error': 'Titre et type d\'événement requis'})
+
+        try:
+            capacity = int(capacity) if capacity else 0
+        except ValueError:
+            capacity = 0
+
+        # Générer la description
+        generator = get_event_description_generator()
+        creator_name = f"{request.user.first_name} {request.user.last_name}".strip() or request.user.username
+
+        result = generator.generate_description(
+            title=title,
+            event_type=event_type,
+            location=location,
+            date=date,
+            capacity=capacity,
+            creator_name=creator_name,
+            tone=tone
+        )
+
+        if result['success']:
+            return JsonResponse({'success': True, 'description': result['description']})
+        else:
+            return JsonResponse({'success': False, 'error': result['error']})
+
+    return JsonResponse({'success': False, 'error': 'Méthode non autorisée'})
+
 @login_required
 def my_events_view(request):
     query = request.GET.get('q', '')
