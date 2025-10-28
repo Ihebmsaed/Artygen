@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 from artwork.models import Artwork
 from category.models import Category
 
+
 # Charger les variables d'environnement
 load_dotenv()
 
@@ -94,6 +95,7 @@ def generate_image(request):
                 return render(request, 'generate_image.html', {
                     'error': str(e),
                 })
+            
 
     return render(request, 'generate_image.html')
 

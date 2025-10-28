@@ -11,6 +11,7 @@ django.setup()
 from django.contrib.auth.models import User
 from accounts.models import Profile
 
+
 print("="*70)
 print("CORRECTION DES CHEMINS DE PHOTOS")
 print("="*70)

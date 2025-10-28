@@ -21,6 +21,7 @@ def artwork_list(request):
     }
     return render(request, 'artwork/artwork_list.html', context)
 
+
 def artwork_detail(request, pk):
     artwork = get_object_or_404(Artwork, pk=pk)
     return render(request, 'artwork/artwork_detail.html', {'artwork': artwork})
