@@ -16,27 +16,27 @@ class EventDescriptionGeneratorTestCase(TestCase):
         )
 
     def test_generate_description_success(self):
-        """Test de génération réussie d'une description"""
+        """Test successful description generation"""
         generator = EventDescriptionGenerator()
         
-        # Note: Ce test peut échouer si l'API Gemini n'est pas configurée
-        # Dans un environnement réel, mock l'API
+        # Note: This test may fail if Gemini API is not configured
+        # In a real environment, mock the API
         result = generator.generate_description(
-            title="Exposition Art Moderne",
-            event_type="Exposition",
-            location="Galerie Centrale, Paris",
+            title="Modern Art Exhibition",
+            event_type="Exhibition",
+            location="Central Gallery, Paris",
             date="2025-11-15 18:00",
             capacity=50,
             creator_name="Jean Dupont",
             tone="professional"
         )
         
-        # Vérifier la structure de la réponse
+        # Check response structure
         self.assertIn('success', result)
         self.assertIn('description', result)
         self.assertIn('error', result)
         
-        # Si l'API fonctionne, vérifier le succès
+        # If API works, check success
         if result['success']:
             self.assertIsInstance(result['description'], str)
             self.assertGreater(len(result['description']), 0)
@@ -45,12 +45,12 @@ class EventDescriptionGeneratorTestCase(TestCase):
             self.assertIsNotNone(result['error'])
 
     def test_generate_description_missing_api_key(self):
-        """Test avec clé API manquante"""
-        # Sauvegarder la config originale
+        """Test with missing API key"""
+        # Save original config
         import os
         original_key = os.environ.get('API_KEY')
         
-        # Supprimer la clé API
+        # Remove API key
         if 'API_KEY' in os.environ:
             del os.environ['API_KEY']
         
@@ -58,7 +58,7 @@ class EventDescriptionGeneratorTestCase(TestCase):
             with self.assertRaises(ValueError):
                 EventDescriptionGenerator()
         finally:
-            # Restaurer la clé API
+            # Restore API key
             if original_key:
                 os.environ['API_KEY'] = original_key
 
@@ -73,11 +73,11 @@ class EventDescriptionViewTestCase(TestCase):
         self.client.login(username='testuser', password='testpass123')
 
     def test_generate_description_view_post(self):
-        """Test de la vue de génération de description via POST"""
+        """Test description generation view via POST"""
         url = reverse('generate_event_description')
         data = {
             'title': 'Test Event',
-            'event_type': 'Atelier',
+            'event_type': 'Workshop',
             'location': 'Test Location',
             'date': '2025-12-01 10:00',
             'capacity': '20',
@@ -90,10 +90,10 @@ class EventDescriptionViewTestCase(TestCase):
         import json
         response_data = json.loads(response.content)
         self.assertIn('success', response_data)
-        # Le succès dépend de la configuration de l'API
+        # Success depends on API configuration
 
     def test_generate_description_view_get(self):
-        """Test de la vue avec méthode GET (devrait échouer)"""
+        """Test view with GET method (should fail)"""
         url = reverse('generate_event_description')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -101,4 +101,4 @@ class EventDescriptionViewTestCase(TestCase):
         import json
         response_data = json.loads(response.content)
         self.assertFalse(response_data['success'])
-        self.assertIn('Méthode non autorisée', response_data['error'])
+        self.assertIn('Method not allowed', response_data['error'])

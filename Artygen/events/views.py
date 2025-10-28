@@ -92,7 +92,7 @@ def generate_event_description(request):
 
         # Validation basique
         if not title or not event_type:
-            return JsonResponse({'success': False, 'error': 'Titre et type d\'événement requis'})
+            return JsonResponse({'success': False, 'error': 'Title and event type are required'})
 
         try:
             capacity = int(capacity) if capacity else 0
@@ -118,7 +118,7 @@ def generate_event_description(request):
         else:
             return JsonResponse({'success': False, 'error': result['error']})
 
-    return JsonResponse({'success': False, 'error': 'Méthode non autorisée'})
+    return JsonResponse({'success': False, 'error': 'Method not allowed'})
 
 @login_required
 def my_events_view(request):

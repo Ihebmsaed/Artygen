@@ -1,6 +1,6 @@
 """
-Générateur de Descriptions d'Événements par IA
-Utilise Google Gemini pour créer des descriptions d'événements engageantes
+AI Event Description Generator
+Uses Google Gemini to create engaging event descriptions in English
 """
 
 import os
@@ -13,11 +13,11 @@ load_dotenv()
 
 class EventDescriptionGenerator:
     """
-    Génère des descriptions d'événements personnalisées basées sur les détails de l'événement
+    Generates personalized event descriptions based on event details using AI
     """
 
     def __init__(self):
-        # Configuration de l'API Gemini
+        # Configure Gemini API
         api_key = os.getenv("API_KEY") or getattr(settings, 'GEMINI_API_KEY', None)
         if not api_key:
             raise ValueError("API key not configured for event description generation")
@@ -27,74 +27,73 @@ class EventDescriptionGenerator:
 
     def generate_description(self, title, event_type, location, date, capacity, creator_name='', tone='professional'):
         """
-        Génère une description d'événement personnalisée
+        Generate a personalized event description in English
 
         Args:
-            title: Titre de l'événement
-            event_type: Type d'événement (ex: "Exposition", "Atelier", "Vernissage")
-            location: Lieu de l'événement
-            date: Date et heure de l'événement (format string)
-            capacity: Capacité maximale
-            creator_name: Nom du créateur (optionnel)
-            tone: Ton de la description ('professional', 'casual', 'creative')
-            language: Langue de la description ('fr', 'en')
+            title: Event title
+            event_type: Type of event (e.g., "Exhibition", "Workshop", "Opening")
+            location: Event location
+            date: Event date and time (string format)
+            capacity: Maximum capacity
+            creator_name: Creator/Organizer name (optional)
+            tone: Description tone ('professional', 'casual', 'creative')
 
         Returns:
             dict: {
-                'description': str (texte de la description générée),
+                'description': str (generated description text),
                 'success': bool,
-                'error': str (si erreur)
+                'error': str (if error)
             }
         """
         try:
             # Construire le prompt selon le ton souhaité
             if tone == 'professional':
-                tone_instruction = "Ton professionnel et élégant, descriptif et informatif"
+                tone_instruction = "Professional and elegant tone, descriptive and informative"
             elif tone == 'casual':
-                tone_instruction = "Ton décontracté et amical, engageant et accessible"
+                tone_instruction = "Casual and friendly tone, engaging and accessible"
             else:  # creative
-                tone_instruction = "Ton créatif et poétique, évocateur et inspirant"
+                tone_instruction = "Creative and poetic tone, evocative and inspiring"
 
-            # Prompt pour Gemini
+            # Prompt for Gemini
             prompt = f"""
-Tu es un expert en rédaction de descriptions d'événements artistiques pour une plateforme d'art nommée Artygen.
+You are an expert in writing descriptions for artistic events on an art platform called Artygen.
 
-Crée une description d'événement engageante et attrayante pour cet événement artistique :
+Create an engaging and attractive event description for this artistic event:
 
-INFORMATIONS DE L'ÉVÉNEMENT :
-- Titre : {title}
-- Type d'événement : {event_type}
-- Lieu : {location}
-- Date et heure : {date}
-- Capacité : {capacity} personnes
-- Créateur/Organisateur : {creator_name if creator_name else "Non spécifié"}
+EVENT INFORMATION:
+- Title: {title}
+- Event Type: {event_type}
+- Location: {location}
+- Date and Time: {date}
+- Capacity: {capacity} people
+- Creator/Organizer: {creator_name if creator_name else "Not specified"}
 
-INSTRUCTIONS :
-1. Longueur : 100-200 mots maximum
-2. Langue : Français
+INSTRUCTIONS:
+1. Length: 100-200 words maximum
+2. Language: English
 3. {tone_instruction}
-4. Mets en avant l'aspect artistique et créatif de l'événement
-5. Incorpore naturellement tous les détails fournis (titre, type, lieu, date, capacité)
-6. Crée une atmosphère invitante et excitante
-7. Termine par une invitation claire à participer
-8. IMPORTANT : Ne pas inventer de fausses informations ou détails non fournis
-9. Reste authentique et crédible
-10. Adapte le contenu selon le type d'événement (exposition, atelier, vernissage, etc.)
+4. Highlight the artistic and creative aspect of the event
+5. Naturally incorporate all provided details (title, type, location, date, capacity)
+6. Create an inviting and exciting atmosphere
+7. End with a clear invitation to participate
+8. IMPORTANT: Do not invent false information or unprovided details
+9. Remain authentic and credible
+10. Adapt content according to event type (exhibition, workshop, opening, etc.)
 
-EXEMPLES DE STRUCTURE :
-- Introduction accrocheuse avec le titre et le type
-- Description du contenu et de l'ambiance
-- Détails pratiques (lieu, date, capacité)
-- Invitation à participer
+STRUCTURE EXAMPLES:
+- Catchy introduction with title and type
+- Description of content and ambiance
+- Practical details (location, date, capacity)
+- Invitation to participate
 
-Génère maintenant une description unique et captivante :
+Generate a unique and captivating description now:
 """
 
-            # Appel à l'API Gemini
+            # Call Gemini API
             response = self.model.generate_content(prompt)
             description_text = response.text.strip()
 
-            # Nettoyer la description (enlever guillemets potentiels)
+            # Clean the description (remove potential quotes)
             description_text = description_text.replace('"', '').replace("'", "'")
 
             return {
@@ -104,7 +103,7 @@ Génère maintenant une description unique et captivante :
             }
 
         except Exception as e:
-            print(f"❌ Erreur lors de la génération de description d'événement : {e}")
+            print(f"❌ Error generating event description: {e}")
             return {
                 'description': None,
                 'success': False,
@@ -113,10 +112,10 @@ Génère maintenant une description unique et captivante :
 
     def regenerate_description_with_different_tone(self, title, event_type, location, date, capacity, creator_name='', current_tone='professional'):
         """
-        Régénère une description avec un ton différent
+        Regenerate description with different tones
 
         Returns:
-            dict avec 3 versions (professional, casual, creative)
+            dict with 3 versions (professional, casual, creative)
         """
         tones = ['professional', 'casual', 'creative']
         descriptions = {}
@@ -134,7 +133,7 @@ Génère maintenant une description unique et captivante :
 _event_description_generator_instance = None
 
 def get_event_description_generator():
-    """Retourne une instance singleton du générateur de description d'événement"""
+    """Return a singleton instance of the event description generator"""
     global _event_description_generator_instance
     if _event_description_generator_instance is None:
         _event_description_generator_instance = EventDescriptionGenerator()

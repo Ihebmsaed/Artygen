@@ -112,12 +112,12 @@
                 </div>
                 <small class="form-text text-muted">
                     <button type="button" id="generate-description-btn" class="btn btn-outline-primary btn-sm mt-2">
-                        <i class="fas fa-magic"></i> Générer avec IA
+                        <i class="fas fa-magic"></i> Generate with AI
                     </button>
                     <select id="description-tone" class="form-control form-control-sm d-inline-block w-auto ml-2">
-                        <option value="professional">Professionnel</option>
-                        <option value="casual">Décontracté</option>
-                        <option value="creative">Créatif</option>
+                        <option value="professional">Professional</option>
+                        <option value="casual">Casual</option>
+                        <option value="creative">Creative</option>
                     </select>
                 </small>
             </div>
@@ -223,7 +223,7 @@
                 
                 // Validation basique
                 if (!title || !eventType) {
-                    alert('Veuillez saisir au moins le titre et le type d\'événement.');
+                    alert('Please enter at least the title and event type.');
                     return;
                 }
                 
@@ -251,7 +251,7 @@
                         }
                     },
                     error: function(xhr, status, error) {
-                        alert('Erreur de connexion. Veuillez réessayer.');
+                        alert('Connection error. Please try again.');
                         console.error('AJAX Error:', error);
                     },
                     complete: function() {
