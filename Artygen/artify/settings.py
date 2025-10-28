@@ -137,10 +137,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-STATICFILES_DIRS = [BASE_DIR / 'static']
-
 STATICFILES_DIRS = [
-    BASE_DIR / "static" / "website",
+    BASE_DIR / 'static',
 ]
 MEDIA_URL = '/profile_photos/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'profile_photos') 

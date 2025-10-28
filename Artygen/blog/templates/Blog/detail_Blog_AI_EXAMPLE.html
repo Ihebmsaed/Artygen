@@ -1,0 +1,275 @@
+{% extends "Blog/index.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <!-- Colonne principale du post -->
+        <div class="col-lg-8">
+            <!-- Carte du post -->
+            <div class="card shadow-lg mb-4">
+                <div class="card-body">
+                    <!-- Header avec badges -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <!-- Badge de sentiment -->
+                            {% if post.sentiment_label %}
+                            <span class="badge {% if post.sentiment_label == 'positive' %}bg-success{% elif post.sentiment_label == 'negative' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                {% if post.sentiment_label == 'positive' %}😊 Positif
+                                {% elif post.sentiment_label == 'negative' %}😔 Négatif
+                                {% else %}😐 Neutre{% endif %}
+                            </span>
+                            {% endif %}
+                            
+                            <!-- Badge de traduction -->
+                            {% if post.title_en and post.title_ar %}
+                            <span class="badge bg-info ms-2">
+                                🌍 Traduit en 4 langues
+                            </span>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Contrôles de traduction -->
+                        <div class="translation-controls">
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-sm btn-outline-primary translate-btn active" data-lang="fr" title="Français">
+                                    🇫🇷
+                                </button>
+                                <button class="btn btn-sm btn-outline-primary translate-btn" data-lang="en" title="English">
+                                    🇬🇧
+                                </button>
+                                <button class="btn btn-sm btn-outline-primary translate-btn" data-lang="ar" title="العربية">
+                                    🇸🇦
+                                </button>
+                                <button class="btn btn-sm btn-outline-primary translate-btn" data-lang="es" title="Español">
+                                    🇪🇸
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loader de traduction -->
+                    <div id="translation-loader" style="display: none;" class="text-center mb-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Traduction en cours...</span>
+                        </div>
+                        <small class="d-block mt-2 text-muted">Traduction en cours...</small>
+                    </div>
+
+                    <!-- Alerte de modération (si applicable) -->
+                    {% if not post.is_appropriate %}
+                    <div class="alert alert-warning mb-3">
+                        <i class="fas fa-exclamation-triangle"></i> 
+                        <strong>En cours de révision :</strong> Ce post est en cours de révision par la modération.
+                        {% if post.moderation_reason %}
+                        <br><small>Raison : {{ post.moderation_reason }}</small>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Titre du post -->
+                    <h1 class="post-title mb-3">{{ post.title }}</h1>
+
+                    <!-- Métadonnées -->
+                    <div class="post-meta mb-4">
+                        <span class="text-muted">
+                            <i class="fas fa-user"></i> {{ post.author.username }}
+                        </span>
+                        <span class="text-muted ms-3">
+                            <i class="fas fa-calendar"></i> {{ post.date_posted|date:"d M Y" }}
+                        </span>
+                        <span class="text-muted ms-3">
+                            <i class="fas fa-heart"></i> {{ post.likes_count }} likes
+                        </span>
+                    </div>
+
+                    <!-- Image (si présente) -->
+                    {% if post.image %}
+                    <div class="post-image mb-4">
+                        <img src="{{ post.image.url }}" alt="{{ post.title }}" class="img-fluid rounded">
+                    </div>
+                    {% endif %}
+
+                    <!-- Contenu du post -->
+                    <div class="post-content">
+                        {{ post.content|linebreaks }}
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="post-actions mt-4">
+                        <button class="btn btn-outline-danger like-btn" data-post-id="{{ post.id }}">
+                            <i class="fas fa-heart"></i> J'aime
+                        </button>
+                        <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#commentsSection">
+                            <i class="fas fa-comment"></i> Commentaires ({{ post.comments.count }})
+                        </button>
+                        
+                        <!-- Boutons pour l'auteur/admin -->
+                        {% if user == post.author or user.is_staff %}
+                        <button id="reanalyze-btn" class="btn btn-outline-secondary">
+                            <i class="fas fa-sync"></i> Re-analyser
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section des commentaires -->
+            <div id="commentsSection" class="collapse show">
+                <div class="card shadow-lg">
+                    <div class="card-header">
+                        <h5><i class="fas fa-comments"></i> Commentaires</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Formulaire de commentaire -->
+                        {% if user.is_authenticated %}
+                        <form id="comment-form" class="mb-4">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <textarea class="form-control" id="comment-content" rows="3" placeholder="Ajouter un commentaire..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> Publier
+                            </button>
+                        </form>
+                        {% endif %}
+
+                        <!-- Liste des commentaires -->
+                        <div id="comments-list">
+                            {% for comment in post.comments.all %}
+                            <div class="comment mb-3 p-3 border rounded">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <strong>{{ comment.author.username }}</strong>
+                                        <small class="text-muted ms-2">{{ comment.date_posted|date:"d/m/Y H:i" }}</small>
+                                        
+                                        <!-- Badge sentiment commentaire -->
+                                        {% if comment.sentiment_label %}
+                                        <span class="badge {% if comment.sentiment_label == 'positive' %}bg-success{% elif comment.sentiment_label == 'negative' %}bg-danger{% else %}bg-secondary{% endif %} ms-2">
+                                            {% if comment.sentiment_label == 'positive' %}😊
+                                            {% elif comment.sentiment_label == 'negative' %}😔
+                                            {% else %}😐{% endif %}
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                    {% if user == comment.author %}
+                                    <button class="btn btn-sm btn-outline-danger delete-comment-btn" data-comment-id="{{ comment.id }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    {% endif %}
+                                </div>
+                                <p class="mt-2 mb-0">{{ comment.content }}</p>
+                                
+                                <!-- Avertissement si commentaire inapproprié -->
+                                {% if not comment.is_appropriate %}
+                                <div class="alert alert-warning mt-2 mb-0">
+                                    <small><i class="fas fa-exclamation-triangle"></i> En révision</small>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% empty %}
+                            <p class="text-muted text-center">Aucun commentaire pour le moment.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Colonne latérale -->
+        <div class="col-lg-4">
+            <!-- Carte d'analyse IA -->
+            <div id="sentiment-info" class="mb-4">
+                <!-- Rempli dynamiquement par JavaScript -->
+            </div>
+
+            <!-- Autres posts de l'auteur -->
+            <div class="card shadow-lg">
+                <div class="card-header">
+                    <h6><i class="fas fa-list"></i> Autres posts de {{ post.author.username }}</h6>
+                </div>
+                <div class="card-body">
+                    {% for other_post in post.author.post_set.all|slice:":5" %}
+                    {% if other_post.id != post.id %}
+                    <div class="mb-2">
+                        <a href="{% url 'post-detail-blog' other_post.pk %}">{{ other_post.title|truncatewords:5 }}</a>
+                        {% if other_post.sentiment_label == 'positive' %}😊
+                        {% elif other_post.sentiment_label == 'negative' %}😔
+                        {% else %}😐{% endif %}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Lien dashboard modération (admin) -->
+            {% if user.is_staff %}
+            <div class="card shadow-lg mt-4">
+                <div class="card-body text-center">
+                    <a href="{% url 'moderation-dashboard' %}" class="btn btn-warning">
+                        <i class="fas fa-shield-alt"></i> Dashboard Modération
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Scripts JavaScript -->
+<script src="{% static 'js/blog-ai-features.js' %}"></script>
+<script>
+    // Initialiser les fonctionnalités IA
+    document.addEventListener('DOMContentLoaded', function() {
+        initAIFeatures({{ post.id }});
+        
+        // Gestion des likes (existant)
+        document.querySelector('.like-btn')?.addEventListener('click', function() {
+            // Code de like existant...
+        });
+        
+        // Gestion des commentaires (existant)
+        document.getElementById('comment-form')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Code de commentaire existant...
+        });
+    });
+</script>
+
+<style>
+    .post-title {
+        color: #2c3e50;
+        font-weight: bold;
+    }
+    
+    .post-content {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: #34495e;
+    }
+    
+    .translation-controls .btn {
+        font-size: 1.2rem;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .translation-controls .btn.active {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+    
+    .comment {
+        background-color: #f8f9fa;
+        transition: all 0.2s;
+    }
+    
+    .comment:hover {
+        background-color: #e9ecef;
+    }
+    
+    .badge {
+        font-size: 0.85rem;
+    }
+</style>
+{% endblock %}

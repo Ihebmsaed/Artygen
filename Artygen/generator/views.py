@@ -16,7 +16,7 @@ load_dotenv()
 
 # Importer les secrets depuis le fichier local
 try:
-    from secrets import HUGGINGFACE_TOKEN
+    from secrets_config import HUGGINGFACE_TOKEN
 except ImportError:
     HUGGINGFACE_TOKEN = os.getenv("HF_TOKEN", "")
 

@@ -87,6 +87,71 @@
 <body>
     {% include '../Blog/navbar.html' %}
 
+    <!-- AI Badges and Translation Controls -->
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <!-- AI Sentiment Badge -->
+            <div class="ai-info">
+                {% if post.sentiment_label %}
+                <span class="badge {% if post.sentiment_label == 'positive' %}badge-success{% elif post.sentiment_label == 'negative' %}badge-danger{% else %}badge-secondary{% endif %}" style="font-size: 1rem;">
+                    {% if post.sentiment_label == 'positive' %}😊 Positif
+                    {% elif post.sentiment_label == 'negative' %}😔 Négatif
+                    {% else %}😐 Neutre{% endif %}
+                </span>
+                {% endif %}
+                
+                {% if post.title_en and post.title_ar %}
+                <span class="badge badge-info ml-2" style="font-size: 1rem;">
+                    🌍 Traduit en 4 langues
+                </span>
+                {% endif %}
+                
+                {% if not post.is_appropriate %}
+                <span class="badge badge-warning ml-2" style="font-size: 1rem;">
+                    ⚠️ En révision
+                </span>
+                {% endif %}
+            </div>
+            
+            <!-- Translation Buttons -->
+            <div class="translation-controls">
+                <div class="btn-group" role="group">
+                    <button class="btn btn-sm btn-outline-primary translate-btn active" data-lang="fr" title="Français">
+                        🇫🇷
+                    </button>
+                    <button class="btn btn-sm btn-outline-primary translate-btn" data-lang="en" title="English">
+                        🇬🇧
+                    </button>
+                    <button class="btn btn-sm btn-outline-primary translate-btn" data-lang="ar" title="العربية">
+                        🇸🇦
+                    </button>
+                    <button class="btn btn-sm btn-outline-primary translate-btn" data-lang="es" title="Español">
+                        🇪🇸
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Translation Loader -->
+        <div id="translation-loader" style="display: none;" class="text-center mb-3">
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Traduction en cours...</span>
+            </div>
+            <small class="d-block mt-2 text-muted">Traduction en cours...</small>
+        </div>
+        
+        <!-- Moderation Warning -->
+        {% if not post.is_appropriate %}
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i> 
+            <strong>En cours de révision :</strong> Ce post est en cours de révision par la modération.
+            {% if post.moderation_reason %}
+            <br><small>Raison : {{ post.moderation_reason }}</small>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
     <!-- Blog Post Title -->
     <div class="post-title">
         {{ post.title }}
@@ -105,6 +170,18 @@
         {% if post.image %}
         <img src="{{ post.image.url }}" class="img-fluid" alt="{{ post.title }}">
         {% endif %}
+        
+        <!-- AI Sentiment Analysis Info -->
+        <div id="sentiment-info" class="mt-4"></div>
+        
+        <!-- Re-analyze button for author/admin -->
+        {% if user == post.author or user.is_staff %}
+        <div class="mt-3 text-center">
+            <button id="reanalyze-btn" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-sync"></i> Re-analyser le sentiment
+            </button>
+        </div>
+        {% endif %}
     </div>
 
     <!-- Divider -->
@@ -112,11 +189,56 @@
     
     <!-- Back to Blog Button -->
     <a href="{% url 'post-home' %}" class="back-btn">Back to Blog</a> <!-- Replace with the correct URL name -->
+    
+    <!-- Admin Link to Moderation Dashboard -->
+    {% if user.is_staff %}
+    <div class="text-center mt-3">
+        <a href="{% url 'moderation-dashboard' %}" class="btn btn-warning">
+            <i class="fas fa-shield-alt"></i> Dashboard Modération
+        </a>
+    </div>
+    {% endif %}
 
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    
+    <!-- AI Features JavaScript -->
+    {% load static %}
+    <script src="{% static 'js/blog-ai-features.js' %}"></script>
+    <script>
+        // Initialize AI features for this post
+        document.addEventListener('DOMContentLoaded', function() {
+            initAIFeatures({{ post.id }});
+        });
+    </script>
+    
+    <style>
+        .translation-controls .btn {
+            font-size: 1.3rem;
+            padding: 0.4rem 0.7rem;
+            border-radius: 8px;
+        }
+        
+        .translation-controls .btn.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        
+        .ai-info .badge {
+            padding: 0.5rem 1rem;
+        }
+        
+        #sentiment-info {
+            border-top: 2px solid #dcdcdc;
+            padding-top: 20px;
+        }
+    </style>
 
 </body>
 </html>
