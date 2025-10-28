@@ -171,6 +171,6 @@ LOGIN_REDIRECT_URL = '/'  # Add this line
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-OPENAI_API_KEY = os.getenv('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')
+# OpenAI API Configuration
+OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '')
 
