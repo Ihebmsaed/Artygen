@@ -41,6 +41,7 @@ Thumbs.db
 # Secrets
 secrets.py
 *_secrets.py
+secrets_config.py
 config/secrets.json
 
 # Large files
