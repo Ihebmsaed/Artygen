@@ -3,7 +3,14 @@ from . import views
 from django.conf.urls.static import static
 from django.conf import settings
 
-from .views import PostListView, PostDetailView, PostCreateView, UserPostListView,edit_post,favouritesDeleteView,PostDetailViewBlog,PostDeleteView,add_comment,delete_comment,GenerateTextView,SuggestionView,UserFavouriteListView
+from .views import (
+    PostListView, PostDetailView, PostCreateView, UserPostListView, 
+    edit_post, favouritesDeleteView, PostDetailViewBlog, PostDeleteView, 
+    add_comment, delete_comment, GenerateTextView, SuggestionView, 
+    UserFavouriteListView, translate_post, get_post_sentiment, 
+    reanalyze_post, moderation_dashboard, approve_content
+)
+
 urlpatterns = [ 
  
     path('', PostListView.as_view(),name="post-home"),
@@ -23,6 +30,18 @@ urlpatterns = [
     path('save_to_favourites/<int:post_id>/', views.save_to_favourites, name='save_to_favourites'),
     path('favourites/', UserFavouriteListView.as_view(), name='favourites'),
     path('favourites/delete/<int:pk>/', favouritesDeleteView.as_view(), name='favourite-delete'),
+    
+    # ===== NOUVELLES URLS IA =====
+    # Traduction multilingue
+    path('post/<int:post_id>/translate/', translate_post, name='translate-post'),
+    
+    # Analyse de sentiment
+    path('post/<int:post_id>/sentiment/', get_post_sentiment, name='post-sentiment'),
+    path('post/<int:post_id>/reanalyze/', reanalyze_post, name='reanalyze-post'),
+    
+    # Modération
+    path('moderation/', moderation_dashboard, name='moderation-dashboard'),
+    path('moderation/approve/<str:content_type>/<int:content_id>/', approve_content, name='approve-content'),
 
 
 

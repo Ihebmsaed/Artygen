@@ -110,6 +110,16 @@
                     </div>
                     <textarea name="description" id="id_description" class="form-control" placeholder="Enter a description" required>{{ form.description.value|default_if_none:'' }}</textarea>
                 </div>
+                <small class="form-text text-muted">
+                    <button type="button" id="generate-description-btn" class="btn btn-outline-primary btn-sm mt-2">
+                        <i class="fas fa-magic"></i> Generate with AI
+                    </button>
+                    <select id="description-tone" class="form-control form-control-sm d-inline-block w-auto ml-2">
+                        <option value="professional">Professional</option>
+                        <option value="casual">Casual</option>
+                        <option value="creative">Creative</option>
+                    </select>
+                </small>
             </div>
 
             <!-- Location Field -->
@@ -193,8 +203,65 @@
     </div>
 
     <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#generate-description-btn').click(function() {
+                const btn = $(this);
+                const originalText = btn.html();
+                
+                // Récupérer les valeurs du formulaire
+                const title = $('#id_title').val();
+                const eventType = $('#id_event_type').val();
+                const location = $('#id_location').val();
+                const date = $('#id_date').val();
+                const capacity = $('#id_capacity').val();
+                const tone = $('#description-tone').val();
+                
+                // Validation basique
+                if (!title || !eventType) {
+                    alert('Please enter at least the title and event type.');
+                    return;
+                }
+                
+                // Désactiver le bouton et afficher le chargement
+                btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Génération...');
+                
+                // Faire l'appel AJAX
+                $.ajax({
+                    url: '{% url "generate_event_description" %}',
+                    type: 'POST',
+                    data: {
+                        'title': title,
+                        'event_type': eventType,
+                        'location': location,
+                        'date': date,
+                        'capacity': capacity,
+                        'tone': tone,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $('#id_description').val(response.description);
+                        } else {
+                            alert('Erreur lors de la génération : ' + response.error);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Connection error. Please try again.');
+                        console.error('AJAX Error:', error);
+                    },
+                    complete: function() {
+                        // Réactiver le bouton
+                        btn.prop('disabled', false).html(originalText);
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
+

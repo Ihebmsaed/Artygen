@@ -10,6 +10,24 @@ class Post(models.Model):
     liked_by = models.ManyToManyField(User, related_name='liked_posts', blank=True)
     likes_count = models.PositiveIntegerField(default=0)  # Champ pour stocker le nombre de likes
     image = models.ImageField(upload_to='', blank=True, null=True)  # Ajout du champ image
+    
+    # Champs pour l'analyse de sentiment et la modération
+    sentiment_score = models.FloatField(null=True, blank=True)  # Score de -1 (négatif) à 1 (positif)
+    sentiment_label = models.CharField(max_length=20, null=True, blank=True)  # positive, negative, neutral
+    is_appropriate = models.BooleanField(default=True)  # False si contenu inapproprié détecté
+    moderation_reason = models.TextField(null=True, blank=True)  # Raison si modéré
+    moderation_date = models.DateTimeField(null=True, blank=True)
+    
+    # Champs pour les traductions
+    title_en = models.CharField(max_length=200, null=True, blank=True)
+    content_en = models.TextField(null=True, blank=True)
+    title_fr = models.CharField(max_length=200, null=True, blank=True)
+    content_fr = models.TextField(null=True, blank=True)
+    title_ar = models.CharField(max_length=200, null=True, blank=True)
+    content_ar = models.TextField(null=True, blank=True)
+    title_es = models.CharField(max_length=200, null=True, blank=True)
+    content_es = models.TextField(null=True, blank=True)
+    original_language = models.CharField(max_length=10, default='fr')  # Langue d'origine
 
     
 
@@ -25,6 +43,12 @@ class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     date_posted = models.DateTimeField(default=timezone.now)
+    
+    # Champs pour l'analyse de sentiment et la modération
+    sentiment_score = models.FloatField(null=True, blank=True)
+    sentiment_label = models.CharField(max_length=20, null=True, blank=True)
+    is_appropriate = models.BooleanField(default=True)
+    moderation_reason = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return f'{self.author.username} comment on {self.post.title}'

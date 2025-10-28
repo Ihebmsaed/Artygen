@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400&display=swap" rel="stylesheet">
@@ -73,13 +73,13 @@
             height: 80px;
             border-radius: 50%; /* Rendre l'image ronde */
             margin-right: 10px; /* Espacement à droite de l'image */
-            border: 2px solid #d4af37 ; /* Bordure pour l'image de profil */
+            border: 2px solid #d4af37 ; /* Bordure pour l'image de Profile */
         }
 .user-photo-comt{  width: 40px; /* Taille de la photo de l'utilisateur */
 height: 40px;
 border-radius: 50%; /* Rendre l'image ronde */
 margin-right: 10px; /* Espacement à droite de l'image */
-border: 2px solid #d4af37 ; /* Bordure pour l'image de profil */}
+border: 2px solid #d4af37 ; /* Bordure pour l'image de Profile */}
         .post-content {
             margin: 10px 0; /* Espacement autour du contenu */
         }
@@ -624,7 +624,7 @@ h2 {
                     <img src="{{ post.image.url }}" alt="{{ post.title }}" class="post-thumbnail__image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                     <div class="no-image-placeholder" style="display: none; background: linear-gradient(135deg, #f0f0f0, #e0e0e0); padding: 60px; text-align: center; border-radius: 12px;">
                         <i class="fas fa-image" style="font-size: 3rem; color: #999;"></i>
-                        <p style="color: #666; margin-top: 10px;">Image indisponible</p>
+                        <p style="color: #666; margin-top: 10px;">Image not available</p>
                     </div>
                 {% else %}
                     <div class="no-image-placeholder" style="background: linear-gradient(135deg, #f0f0f0, #e0e0e0); padding: 60px; text-align: center; border-radius: 12px;">
@@ -673,7 +673,7 @@ h2 {
                     {% for comment in post.comments.all %}
                     <div class="comment" data-comment-id="{{ comment.id }}">
                         {% if comment.author_profile_photo %}
-                            <img src="/profile_photos/{{ comment.author_profile_photo }}" alt="{{ comment.author.username }}" class="user-photo-comt">
+                            <img src="{{ comment.author_profile_photo }}" alt="{{ comment.author.username }}" class="user-photo-comt">
                         {% else %}
                             <div class="user-photo-comt" style="background: linear-gradient(135deg, #4a90e2, #357abd); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px;">
                                 {{ comment.author.username|slice:":1"|upper }}
@@ -681,7 +681,7 @@ h2 {
                         {% endif %}
                         <strong>{{ comment.author.username }}</strong>: {{ comment.content }}
                         {% if comment.author.id == user.id %}
-                        <i class="fas fa-trash" style="color: red; cursor: pointer;" onclick="deleteComment({{ comment.id }}, {{ post.id }})" title="Supprimer le commentaire"></i>
+                        <i class="fas fa-trash" style="color: red; cursor: pointer;" onclick="deleteComment({{ comment.id }}, {{ post.id }})" title="Delete comment"></i>
                         {% endif %}
                     </div>
                     
@@ -1056,3 +1056,4 @@ h2 {
 </body>
 
 </html>
+

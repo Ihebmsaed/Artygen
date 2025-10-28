@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -109,7 +109,7 @@
 <div class="container-fluid">
     <div class="card">
         <div class="image-container">
-            <img src="data:image/png;base64,{{ image_data }}" alt="Image Générée" id="generatedImage"/>
+            <img src="data:image/png;base64,{{ image_data }}" alt="Generated Image" id="generatedImage"/>
         </div>
         
         {% if error %}
@@ -132,7 +132,7 @@
                     <input type="hidden" name="style" value="{{ style }}">
                     
                     <div class="category-select">
-                        <label for="category"><strong>Choisir une catégorie :</strong></label>
+                        <label for="category"><strong>Choose a category:</strong></label>
                         <select name="category_id" id="category" class="form-control">
                             <option value="">AI Generated (par défaut)</option>
                             {% for category in categories %}
@@ -174,3 +174,4 @@
 
 </body>
 </html>
+

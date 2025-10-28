@@ -12,8 +12,8 @@ from django.shortcuts import render
 
 def calculate_recommendations(feedback_df):
     if feedback_df.empty or 'user_id' not in feedback_df.columns or 'rating' not in feedback_df.columns:
-        print("Le DataFrame est vide ou manque des colonnes nécessaires.")
-        return pd.DataFrame()  # Retourne un DataFrame vide si aucune donnée
+        print("The DataFrame is empty or missing necessary columns.")
+        return pd.DataFrame()  # Return an empty DataFrame if no data
 
     # Calcul des recommandations
     recommendations = feedback_df.groupby('user_id')['rating'].mean().reset_index()
@@ -41,11 +41,11 @@ def recommendations_view(request):
         recommendations = calculate_recommendations(df)
 
         if recommendations.empty:
-            context = {'message': 'Aucune recommandation disponible.'}
+            context = {'message': 'No recommendations available.'}
         else:
             context = {'recommendations': recommendations.to_dict(orient='records')}
     else:
-        context = {'message': 'Aucun feedback trouvé.'}
+        context = {'message': 'No feedback found.'}
 
     return render(request, 'feedback/recommendations.html', 
                   {'feedbacks': feedbacks,          
@@ -56,13 +56,13 @@ def get_recommendations(user_id, user_item_matrix, similarity_matrix, n_recommen
     user_index = user_item_matrix.index.get_loc(user_id)
     similar_users = similarity_matrix[user_index]
     
-    # Trouver les indices des œuvres déjà notées par l'utilisateur
+    # Find the indices of artworks already rated by the user
     rated_items = user_item_matrix.columns[user_item_matrix.loc[user_id] > 0]
     
-    # Calculer les scores de recommandations
+    # Calculate recommendation scores
     scores = similar_users.dot(user_item_matrix) / similar_users.sum()
     
-    # Exclure les œuvres déjà notées
+    # Exclude already rated artworks
     scores = scores[~scores.index.isin(rated_items)]
     
     return scores.nlargest(n_recommendations)
@@ -89,12 +89,12 @@ def collect_feedbacks():
         for _, duplicate in duplicates.iterrows():
             print(f"User ID: {duplicate['user_id']}, Artwork ID: {duplicate['artwork_id']}")
 
-    # Calculer la moyenne pour chaque artwork_id
+    # Calculate average for each artwork_id
     average_ratings = df.groupby('artwork_id')['rating'].mean().reset_index()
-    # Arrondir les moyennes à l'entier le plus proche
+    # Round averages to the nearest integer
     average_ratings['rating'] = average_ratings['rating'].apply(lambda x: round(x))
 
-    # Créer une liste pour les résultats des moyennes des ratings
+    # Create a list for average rating results
     average_rating_results = []
     for _, row in average_ratings.iterrows():
         artwork_id = row['artwork_id']
@@ -107,14 +107,14 @@ def collect_feedbacks():
 def create_user_item_matrix(feedbacks):
     df = pd.DataFrame(list(feedbacks))
     
-    # Vérifie que le DataFrame contient les colonnes attendues
-    print("DataFrame après création:", df)
+    # Check that the DataFrame contains the expected columns
+    print("DataFrame after creation:", df)
 
     if 'user_id' not in df.columns or 'artwork_id' not in df.columns or 'rating' not in df.columns:
-        print("Le DataFrame ne contient pas les colonnes nécessaires.")
-        return pd.DataFrame()  # Retourne un DataFrame vide si aucune donnée
+        print("The DataFrame does not contain the necessary columns.")
+        return pd.DataFrame()  # Return an empty DataFrame if no data
 
-    # Pivot pour créer la matrice utilisateur-oeuvre
+    # Pivot to create the user-artwork matrix
     user_item_matrix = df.pivot(index='user_id', columns='artwork_id', values='rating').fillna(0)
     return user_item_matrix
 
@@ -180,7 +180,7 @@ def assign_badges_to_user(user):
             UserBadge.objects.create(user=user, badge=badge)
             print(f"Badge '{badge.name}' awarded to {user.username}")
         else:
-            print(f"Badge '{badge.name}' already awarded to {user.username}")  # Ajoutez cette ligne
+            print(f"Badge '{badge.name}' already awarded to {user.username}")  # Add this line
 
 @login_required
 def feedback_list(request):

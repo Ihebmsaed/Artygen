@@ -1,0 +1,232 @@
+{% extends "Blog/index.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">
+        <i class="fas fa-shield-alt"></i> Dashboard de Modération IA
+    </h1>
+
+    <!-- Statistiques -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-success">{{ stats.positive }}</h3>
+                    <p>Posts Positifs 😊</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-danger">{{ stats.negative }}</h3>
+                    <p>Posts Négatifs 😔</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-secondary">{{ stats.neutral }}</h3>
+                    <p>Posts Neutres 😐</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center border-warning">
+                <div class="card-body">
+                    <h3 class="text-warning">{{ stats.total_flagged }}</h3>
+                    <p>Contenus Signalés ⚠️</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Posts flaggés -->
+    <div class="card mb-4">
+        <div class="card-header bg-warning text-dark">
+            <h4><i class="fas fa-exclamation-triangle"></i> Posts Signalés ({{ flagged_posts.count }})</h4>
+        </div>
+        <div class="card-body">
+            {% if flagged_posts %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Titre</th>
+                                <th>Auteur</th>
+                                <th>Date</th>
+                                <th>Raison</th>
+                                <th>Sentiment</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for post in flagged_posts %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'post-detail' post.pk %}" target="_blank">
+                                        {{ post.title|truncatewords:5 }}
+                                    </a>
+                                </td>
+                                <td>{{ post.author.username }}</td>
+                                <td>{{ post.moderation_date|date:"d/m/Y H:i" }}</td>
+                                <td>
+                                    <span class="badge bg-danger">
+                                        {{ post.moderation_reason|truncatewords:10 }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if post.sentiment_label == 'positive' %}
+                                        <span class="badge bg-success">😊 Positif</span>
+                                    {% elif post.sentiment_label == 'negative' %}
+                                        <span class="badge bg-danger">😔 Négatif</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">😐 Neutre</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-success approve-btn" 
+                                            data-type="post" 
+                                            data-id="{{ post.id }}">
+                                        <i class="fas fa-check"></i> Approuver
+                                    </button>
+                                    <a href="{% url 'post-detail' post.pk %}" 
+                                       class="btn btn-sm btn-info" target="_blank">
+                                        <i class="fas fa-eye"></i> Voir
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> Aucun post signalé ! Tout va bien.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Commentaires flaggés -->
+    <div class="card">
+        <div class="card-header bg-warning text-dark">
+            <h4><i class="fas fa-comments"></i> Commentaires Signalés ({{ flagged_comments.count }})</h4>
+        </div>
+        <div class="card-body">
+            {% if flagged_comments %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Commentaire</th>
+                                <th>Auteur</th>
+                                <th>Post</th>
+                                <th>Date</th>
+                                <th>Raison</th>
+                                <th>Sentiment</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for comment in flagged_comments %}
+                            <tr>
+                                <td>{{ comment.content|truncatewords:8 }}</td>
+                                <td>{{ comment.author.username }}</td>
+                                <td>
+                                    <a href="{% url 'post-detail' comment.post.pk %}" target="_blank">
+                                        {{ comment.post.title|truncatewords:3 }}
+                                    </a>
+                                </td>
+                                <td>{{ comment.date_posted|date:"d/m/Y H:i" }}</td>
+                                <td>
+                                    <span class="badge bg-danger">
+                                        {{ comment.moderation_reason|truncatewords:10 }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if comment.sentiment_label == 'positive' %}
+                                        <span class="badge bg-success">😊</span>
+                                    {% elif comment.sentiment_label == 'negative' %}
+                                        <span class="badge bg-danger">😔</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">😐</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-success approve-btn" 
+                                            data-type="comment" 
+                                            data-id="{{ comment.id }}">
+                                        <i class="fas fa-check"></i> Approuver
+                                    </button>
+                                    <a href="{% url 'post-detail' comment.post.pk %}" 
+                                       class="btn btn-sm btn-info" target="_blank">
+                                        <i class="fas fa-eye"></i> Voir
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> Aucun commentaire signalé !
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Gestion de l'approbation de contenu
+    document.querySelectorAll('.approve-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const contentType = this.dataset.type;
+            const contentId = this.dataset.id;
+            
+            if (confirm('Êtes-vous sûr de vouloir approuver ce contenu ?')) {
+                fetch(`/blog/moderation/approve/${contentType}/${contentId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        alert('✅ ' + data.message);
+                        location.reload();
+                    } else if (data.error) {
+                        alert('❌ ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('❌ Erreur lors de l\'approbation');
+                });
+            }
+        });
+    });
+});
+</script>
+
+<style>
+.card {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+}
+
+.badge {
+    font-size: 0.9em;
+}
+</style>
+{% endblock %}

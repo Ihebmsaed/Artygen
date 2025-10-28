@@ -15,6 +15,11 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from .forms import FavouriteNoteForm
+from .ai_services import (
+    TranslationService, 
+    SentimentModerationService, 
+    process_post_with_ai
+)
 
 
 from django.http import JsonResponse
@@ -64,8 +69,37 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        messages.success(self.request, '✅ Post publié avec succès !')
-        return super().form_valid(form)
+        form.instance.original_language = 'fr'  # Langue par défaut
+        
+        # Sauvegarder d'abord le post
+        response = super().form_valid(form)
+        
+        # Traiter le post avec IA (traduction, sentiment, modération)
+        try:
+            result = process_post_with_ai(self.object)
+            
+            # Vérifier si le contenu est approprié
+            if not self.object.is_appropriate:
+                messages.warning(
+                    self.request, 
+                    f'⚠️ Attention : Votre post a été publié mais marqué pour modération. Raison : {self.object.moderation_reason}'
+                )
+            else:
+                sentiment_emoji = {
+                    'positive': '😊',
+                    'negative': '😔',
+                    'neutral': '😐'
+                }.get(self.object.sentiment_label, '📝')
+                
+                messages.success(
+                    self.request, 
+                    f'✅ Post publié avec succès ! {sentiment_emoji} Sentiment détecté : {self.object.sentiment_label}. 🌍 Traduit automatiquement en 4 langues.'
+                )
+        except Exception as e:
+            print(f"Erreur lors du traitement IA: {e}")
+            messages.success(self.request, '✅ Post publié avec succès !')
+        
+        return response
 
     success_url = reverse_lazy('post-home')
    
@@ -125,7 +159,7 @@ def edit_post(request, post_id):
             post.image = request.FILES['image']
         
         post.save()
-        messages.success(request, '✅ Post modifié avec succès !')
+        messages.success(request, '✅ Post modified successfully!')
         return redirect('user-posts')
 
     return render(request, 'Blog/edit_post.html', {'post': post})
@@ -154,8 +188,31 @@ def add_comment(request, post_id):
             data = json.loads(request.body)  # Charger le JSON
             content = data.get('content')
             if content:
-                Comment.objects.create(post=post, author=request.user, content=content)
-                return JsonResponse({'comment': content, 'author': request.user.username})
+                # Créer le commentaire
+                comment = Comment.objects.create(post=post, author=request.user, content=content)
+                
+                # Analyser le sentiment et modérer le commentaire
+                try:
+                    analysis = SentimentModerationService.analyze_and_moderate(content)
+                    comment.sentiment_score = analysis['sentiment']['score']
+                    comment.sentiment_label = analysis['sentiment']['label']
+                    comment.is_appropriate = analysis['moderation']['is_appropriate']
+                    
+                    if not analysis['moderation']['is_appropriate']:
+                        comment.moderation_reason = analysis['moderation']['reason']
+                    
+                    comment.save()
+                    
+                    return JsonResponse({
+                        'comment': content, 
+                        'author': request.user.username,
+                        'sentiment': analysis['sentiment']['label'],
+                        'is_appropriate': analysis['moderation']['is_appropriate'],
+                        'warning': analysis['moderation']['reason'] if not analysis['moderation']['is_appropriate'] else None
+                    })
+                except Exception as e:
+                    print(f"Erreur analyse IA du commentaire: {e}")
+                    return JsonResponse({'comment': content, 'author': request.user.username})
             else:
                 return JsonResponse({'error': 'Content is required'}, status=400)
         except Exception as e:
@@ -229,16 +286,16 @@ class GenerateTextView(View):
             error_message = str(e)
             print(f"Error during text generation: {error_message}")
             
-            # Vérifier si c'est une erreur de quota
+            # Check if it's a quota error
             if "429" in error_message or "RATE_LIMIT_EXCEEDED" in error_message or "Quota exceeded" in error_message:
                 return JsonResponse({
-                    'error': 'Le quota de l\'API Google Gemini a été dépassé. Veuillez réessayer plus tard ou utiliser une autre clé API.'
+                    'error': 'The Google Gemini API quota has been exceeded. Please try again later or use another API key.'
                 }, status=429)
             
             return JsonResponse({'error': error_message}, status=500)
 
     def rephrase_text(self, text):
-        # Envoyer le message d'entrée à la session de chat et obtenir la réponse
+        # Send the input message to the chat session and get the response
         response = self.chat_session.send_message(text)
         return response.text
 
@@ -278,16 +335,16 @@ class SuggestionView(View):
             error_message = str(e)
             print(f"Error during suggestion generation: {error_message}")
             
-            # Vérifier si c'est une erreur de quota
+            # Check if it's a quota error
             if "429" in error_message or "RATE_LIMIT_EXCEEDED" in error_message or "Quota exceeded" in error_message:
                 return JsonResponse({
-                    'error': 'Le quota de l\'API Google Gemini a été dépassé. Veuillez réessayer plus tard ou utiliser une autre clé API.'
+                    'error': 'The Google Gemini API quota has been exceeded. Please try again later or use another API key.'
                 }, status=429)
             
             return JsonResponse({'error': error_message}, status=500)
 
     def get_suggestions(self, text):
-        # Envoyer le message d'entrée à la session de chat et obtenir la réponse
+        # Send the input message to the chat session and get the response
         response = self.chat_session.send_message(text)
         return response.text
 
@@ -324,3 +381,153 @@ def save_to_favourites(request, post_id):
 
 def blog(request):
     return render(request, 'blog.html')
+
+
+# ===== NOUVELLES FONCTIONNALITÉS IA =====
+
+@login_required
+@csrf_exempt
+def translate_post(request, post_id):
+    """Traduit un post dans une langue spécifique"""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            target_language = data.get('language', 'en')
+            
+            post = get_object_or_404(Post, id=post_id)
+            
+            # Vérifier si la traduction existe déjà
+            title_field = f'title_{target_language}'
+            content_field = f'content_{target_language}'
+            
+            if hasattr(post, title_field) and getattr(post, title_field):
+                # Traduction déjà disponible
+                return JsonResponse({
+                    'title': getattr(post, title_field),
+                    'content': getattr(post, content_field),
+                    'cached': True
+                })
+            
+            # Générer une nouvelle traduction
+            translation = TranslationService.translate_post(
+                post.title, 
+                post.content, 
+                target_language=target_language,
+                source_language=post.original_language
+            )
+            
+            # Sauvegarder la traduction
+            setattr(post, title_field, translation['title'])
+            setattr(post, content_field, translation['content'])
+            post.save()
+            
+            return JsonResponse({
+                'title': translation['title'],
+                'content': translation['content'],
+                'cached': False
+            })
+            
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+@login_required
+def get_post_sentiment(request, post_id):
+    """Retourne l'analyse de sentiment d'un post"""
+    post = get_object_or_404(Post, id=post_id)
+    
+    return JsonResponse({
+        'sentiment_score': post.sentiment_score,
+        'sentiment_label': post.sentiment_label,
+        'is_appropriate': post.is_appropriate,
+        'moderation_reason': post.moderation_reason
+    })
+
+
+@login_required
+@csrf_exempt
+def reanalyze_post(request, post_id):
+    """Re-analyse un post (sentiment et modération)"""
+    if request.method == 'POST':
+        try:
+            post = get_object_or_404(Post, id=post_id)
+            
+            # Seul l'auteur ou un staff peut re-analyser
+            if request.user != post.author and not request.user.is_staff:
+                return JsonResponse({'error': 'Permission denied'}, status=403)
+            
+            # Re-analyser le post
+            result = process_post_with_ai(post)
+            
+            return JsonResponse({
+                'sentiment': result['sentiment'],
+                'moderation': result['moderation'],
+                'message': 'Post re-analysé avec succès'
+            })
+            
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+@login_required
+def moderation_dashboard(request):
+    """Dashboard de modération pour les administrateurs"""
+    if not request.user.is_staff:
+        messages.error(request, "Accès refusé : Administrateurs uniquement")
+        return redirect('post-home')
+    
+    # Posts marqués comme inappropriés
+    flagged_posts = Post.objects.filter(is_appropriate=False).order_by('-moderation_date')
+    
+    # Commentaires inappropriés
+    flagged_comments = Comment.objects.filter(is_appropriate=False).order_by('-date_posted')
+    
+    # Statistiques de sentiment
+    positive_posts = Post.objects.filter(sentiment_label='positive').count()
+    negative_posts = Post.objects.filter(sentiment_label='negative').count()
+    neutral_posts = Post.objects.filter(sentiment_label='neutral').count()
+    
+    context = {
+        'flagged_posts': flagged_posts,
+        'flagged_comments': flagged_comments,
+        'stats': {
+            'positive': positive_posts,
+            'negative': negative_posts,
+            'neutral': neutral_posts,
+            'total_flagged': flagged_posts.count() + flagged_comments.count()
+        }
+    }
+    
+    return render(request, 'Blog/moderation_dashboard.html', context)
+
+
+@login_required
+@csrf_exempt
+def approve_content(request, content_type, content_id):
+    """Approuve un contenu flaggé (admin seulement)"""
+    if not request.user.is_staff:
+        return JsonResponse({'error': 'Permission denied'}, status=403)
+    
+    if request.method == 'POST':
+        try:
+            if content_type == 'post':
+                content = get_object_or_404(Post, id=content_id)
+            elif content_type == 'comment':
+                content = get_object_or_404(Comment, id=content_id)
+            else:
+                return JsonResponse({'error': 'Invalid content type'}, status=400)
+            
+            content.is_appropriate = True
+            content.moderation_reason = None
+            content.save()
+            
+            return JsonResponse({'message': 'Contenu approuvé avec succès'})
+            
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
