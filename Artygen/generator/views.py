@@ -18,13 +18,18 @@ load_dotenv()
 # Importer les secrets depuis le fichier local
 try:
     from secrets_config import HUGGINGFACE_TOKEN
+    HF_TOKEN = HUGGINGFACE_TOKEN
+    print("✅ Loaded HF_TOKEN from secrets_config")
 except ImportError:
-    HUGGINGFACE_TOKEN = os.getenv("HF_TOKEN", "")
+    HF_TOKEN = os.getenv("HF_TOKEN", "")
+    print(f"⚠️ Loaded HF_TOKEN from environment: {'✅ Found' if HF_TOKEN else '❌ MISSING'}")
+
+if not HF_TOKEN:
+    print("🚨 WARNING: HF_TOKEN is not configured!")
 
 # Configuration API
 # FLUX.1-schnell : Modèle rapide et de haute qualité pour la génération d'images
 API_URL = "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell"
-HF_TOKEN = HUGGINGFACE_TOKEN
 
 def query(payload):
     """Send a request to the Hugging Face API to generate an image"""
@@ -63,6 +68,12 @@ def query(payload):
         raise
 
 def generate_image(request):
+    # Check if HF_TOKEN is configured
+    if not HF_TOKEN:
+        return render(request, 'generate_image.html', {
+            'error': '🔑 Hugging Face API token is not configured. Please add HF_TOKEN to environment variables on Render.',
+        })
+    
     if request.method == 'POST':
         prompt = request.POST.get('prompt')
         style = request.POST.get('style')  # Get the selected style from the form
