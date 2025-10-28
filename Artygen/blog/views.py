@@ -69,8 +69,37 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        messages.success(self.request, '✅ Post publié avec succès !')
-        return super().form_valid(form)
+        form.instance.original_language = 'fr'  # Langue par défaut
+        
+        # Sauvegarder d'abord le post
+        response = super().form_valid(form)
+        
+        # Traiter le post avec IA (traduction, sentiment, modération)
+        try:
+            result = process_post_with_ai(self.object)
+            
+            # Vérifier si le contenu est approprié
+            if not self.object.is_appropriate:
+                messages.warning(
+                    self.request, 
+                    f'⚠️ Attention : Votre post a été publié mais marqué pour modération. Raison : {self.object.moderation_reason}'
+                )
+            else:
+                sentiment_emoji = {
+                    'positive': '😊',
+                    'negative': '😔',
+                    'neutral': '😐'
+                }.get(self.object.sentiment_label, '📝')
+                
+                messages.success(
+                    self.request, 
+                    f'✅ Post publié avec succès ! {sentiment_emoji} Sentiment détecté : {self.object.sentiment_label}. 🌍 Traduit automatiquement en 4 langues.'
+                )
+        except Exception as e:
+            print(f"Erreur lors du traitement IA: {e}")
+            messages.success(self.request, '✅ Post publié avec succès !')
+        
+        return response
 
     success_url = reverse_lazy('post-home')
    
