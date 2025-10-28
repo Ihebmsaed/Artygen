@@ -660,6 +660,10 @@ h2 {
                 <option value="Low">Low</option>
             </select>
 
+
+
+            
+
             <button class="button-fav" type="button" onclick="submitSaveForm({{ post.id }})">Save</button>
         </form>
     </div>
@@ -684,6 +688,11 @@ h2 {
                         <i class="fas fa-trash" style="color: red; cursor: pointer;" onclick="deleteComment({{ comment.id }}, {{ post.id }})" title="Supprimer le commentaire"></i>
                         {% endif %}
                     </div>
+
+
+
+
+
                     
                     {% empty %}
                     <div class="comment">No comments yet.</div>
