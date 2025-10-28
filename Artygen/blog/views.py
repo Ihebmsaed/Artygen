@@ -64,7 +64,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        messages.success(self.request, '✅ Post publié avec succès !')
+        messages.success(self.request, '✅ Post published successfully!')
         return super().form_valid(form)
 
     success_url = reverse_lazy('post-home')
@@ -125,7 +125,7 @@ def edit_post(request, post_id):
             post.image = request.FILES['image']
         
         post.save()
-        messages.success(request, '✅ Post modifié avec succès !')
+        messages.success(request, '✅ Post modified successfully!')
         return redirect('user-posts')
 
     return render(request, 'Blog/edit_post.html', {'post': post})
@@ -229,16 +229,16 @@ class GenerateTextView(View):
             error_message = str(e)
             print(f"Error during text generation: {error_message}")
             
-            # Vérifier si c'est une erreur de quota
+            # Check if it's a quota error
             if "429" in error_message or "RATE_LIMIT_EXCEEDED" in error_message or "Quota exceeded" in error_message:
                 return JsonResponse({
-                    'error': 'Le quota de l\'API Google Gemini a été dépassé. Veuillez réessayer plus tard ou utiliser une autre clé API.'
+                    'error': 'The Google Gemini API quota has been exceeded. Please try again later or use another API key.'
                 }, status=429)
             
             return JsonResponse({'error': error_message}, status=500)
 
     def rephrase_text(self, text):
-        # Envoyer le message d'entrée à la session de chat et obtenir la réponse
+        # Send the input message to the chat session and get the response
         response = self.chat_session.send_message(text)
         return response.text
 
@@ -278,16 +278,16 @@ class SuggestionView(View):
             error_message = str(e)
             print(f"Error during suggestion generation: {error_message}")
             
-            # Vérifier si c'est une erreur de quota
+            # Check if it's a quota error
             if "429" in error_message or "RATE_LIMIT_EXCEEDED" in error_message or "Quota exceeded" in error_message:
                 return JsonResponse({
-                    'error': 'Le quota de l\'API Google Gemini a été dépassé. Veuillez réessayer plus tard ou utiliser une autre clé API.'
+                    'error': 'The Google Gemini API quota has been exceeded. Please try again later or use another API key.'
                 }, status=429)
             
             return JsonResponse({'error': error_message}, status=500)
 
     def get_suggestions(self, text):
-        # Envoyer le message d'entrée à la session de chat et obtenir la réponse
+        # Send the input message to the chat session and get the response
         response = self.chat_session.send_message(text)
         return response.text
 

@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,9 +48,9 @@
                 <div class="card">
                     <div class="text-center">
                         {% if user.profile.photo %}
-                            <img src="{{ user.profile.photo.url }}" alt="Photo de {{ user.username }}" class="profile-photo">
+                            <img src="{{ user.profile.photo.url }}" alt="Photo of {{ user.username }}" class="profile-photo">
                         {% else %}
-                            <img src="{% static 'images/default-profile.png' %}" alt="Photo de profil par défaut" class="profile-photo">
+                            <img src="{% static 'images/default-profile.png' %}" alt="Default profile photo" class="profile-photo">
                         {% endif %}
                     </div>
                     <div class="card-body">
@@ -98,3 +98,4 @@
 
 </body>
 </html>
+

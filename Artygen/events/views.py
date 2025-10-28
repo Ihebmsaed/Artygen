@@ -80,7 +80,7 @@ class EventDetailView(DetailView):
 @login_required
 def generate_event_description(request):
     """
-    Vue pour générer une description d'événement avec IA via AJAX
+    View to generate an event description with AI via AJAX
     """
     if request.method == 'POST':
         title = request.POST.get('title', '')
@@ -90,7 +90,7 @@ def generate_event_description(request):
         capacity = request.POST.get('capacity', '')
         tone = request.POST.get('tone', 'professional')
 
-        # Validation basique
+        # Basic validation
         if not title or not event_type:
             return JsonResponse({'success': False, 'error': 'Title and event type are required'})
 
@@ -99,7 +99,7 @@ def generate_event_description(request):
         except ValueError:
             capacity = 0
 
-        # Générer la description
+        # Generate the description
         generator = get_event_description_generator()
         creator_name = f"{request.user.first_name} {request.user.last_name}".strip() or request.user.username
 
