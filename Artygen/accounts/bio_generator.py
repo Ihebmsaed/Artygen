@@ -4,9 +4,17 @@ Utilise Google Gemini pour créer des bios professionnelles
 """
 
 import os
-import google.generativeai as genai
 from django.conf import settings
 from dotenv import load_dotenv
+
+# Gracefully handle missing google.generativeai package
+try:
+    import google.generativeai as genai
+    GENAI_AVAILABLE = True
+except ImportError:
+    genai = None
+    GENAI_AVAILABLE = False
+    print("⚠️ google.generativeai not available - bio generation will be disabled")
 
 load_dotenv()
 
@@ -17,6 +25,11 @@ class BioGenerator:
     """
     
     def __init__(self):
+        # Check if genai is available
+        if not GENAI_AVAILABLE:
+            self.model = None
+            return
+        
         # Configuration de l'API Gemini
         api_key = os.getenv("API_KEY") or settings.GEMINI_API_KEY
         if not api_key:
@@ -45,6 +58,16 @@ class BioGenerator:
                 'error': str (si erreur)
             }
         """
+        # Check if AI is available
+        if not GENAI_AVAILABLE or self.model is None:
+            return {
+                'bio': f"{first_name} {last_name} (@{username}) est un(e) artiste passionné(e). "
+                       f"Découvrez son univers créatif sur Artygen.",
+                'success': True,
+                'error': None,
+                'fallback': True
+            }
+        
         try:
             # Préparer les informations
             full_name = f"{first_name} {last_name}".strip()
@@ -116,6 +139,10 @@ Génère maintenant une bio unique et captivante:
         Returns:
             dict avec 3 versions (professional, casual, creative)
         """
+        # Check if AI is available
+        if not GENAI_AVAILABLE or self.model is None:
+            return {}
+        
         tones = ['professional', 'casual', 'creative']
         bios = {}
         
